@@ -13,15 +13,33 @@ public class GameState {
 	private static final long HORIZONTAL_MOTION_DELAY = 100; // 10 cells / s
 	
 	GameState(int level) {
+		this.level = level;
+		score = 0;
 		gameOver = false;
 		paused = false;
+		board = new Board();
+		isActivePiece = false;
+		// currentPiece = Piece.getRandomPiece();
+		nextPiece = Piece.getRandomPiece();
+		// resetFallCountdown();
+		fallCountdown = 0;
+	}
+	
+	// GETTERS
+	Board getBoard() {
+		return board;
+	}
+	Piece getCurrentPiece() {
+		return currentPiece;
 	}
 	
 	public void updateState(long dTime) {
 		if (isOver() || isPaused()) {
+			System.out.println("gameover");
 			return;
 		}
-		updateFallCountdown(deltaTime);
+		// System.out.println(fallCountdown);
+		updateFallCountdown(dTime);
 		if (!isFallTimeOut()) {
 			return;
 		}
@@ -41,12 +59,12 @@ public class GameState {
 		resetFallCountdown();
 	}
 	
-	public void updatePieceMotion(long dTime, Move movetype) {
+	public void updatePieceMotion(Move movetype, long dTime) {
 		if (isOver() || isPaused() || !isActivePiece()) {
 			return;
 		}
 		updateMotionCountdown(dTime);
-		if (!isMoveTimeOut()) {
+		if (!isMotionTimeOut()) {
 			return;
 		}
 		if (canMovePiece(movetype)) {
@@ -65,8 +83,14 @@ public class GameState {
 	void updateFallCountdown(double dTime) {
 		fallCountdown -= dTime;
 	}
+	void updateMotionCountdown(double dTime) {
+		motionCountdown -= dTime;
+	}
 	boolean isFallTimeOut() {
 		return fallCountdown <= 0;
+	}
+	boolean isMotionTimeOut() {
+		return motionCountdown <= 0;
 	}
 	void resetFallCountdown() {
 		fallCountdown = 50 * (11 - level);
@@ -88,10 +112,10 @@ public class GameState {
 	};
 	
 	boolean canFallPiece() {
-		canMovePiece(DROP);
+		return canMovePiece(Move.DROP);
 	}
 	void moveDownPiece() {
-		movePiece(DROP);
+		movePiece(Move.DROP);
 	}
 	void mergePiece() {
 		isActivePiece = false;
@@ -99,13 +123,14 @@ public class GameState {
 	}
 	
 	boolean canSpawnPiece() {
-		return board.willCollide(nextPiece);
+		return !board.willCollide(nextPiece);
 		// return board.isFull(Piece.START_X, Piece.START_Y);
 	}
 	
 	void spawnPiece() {
 		currentPiece = nextPiece;
 		nextPiece = Piece.getRandomPiece();
+		isActivePiece = true;
 	}
 	void setGameOver() {
 		gameOver = true;
@@ -120,7 +145,8 @@ public class GameState {
 	}
 	
 	boolean canMovePiece(Move movetype) {
-		Piece movedPiece = (currentPiece.copy()).move(movetype);
+		Piece movedPiece = (currentPiece.copy());
+		movedPiece.move(movetype);
 		return !(board.willCollide(movedPiece));
 	}
 	void movePiece(Move movetype) {

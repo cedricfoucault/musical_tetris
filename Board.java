@@ -1,11 +1,28 @@
+import java.awt.*;
+
 class Board {
 	public static final int HEIGHT = 20;
 	public static final int WIDTH = 10;
-	public static final int EMPTY_BLOCK = false;
+	public static final boolean EMPTY_BLOCK = false;
 	private boolean[][] data;
 	
 	Board() {
 		data = new boolean[HEIGHT][WIDTH];
+	}
+	
+	void draw(Graphics2D g, int frame_width, int frame_height) {
+		int block_width = frame_width / WIDTH;
+		int block_height = frame_height / HEIGHT;
+		for (int y = 0; y < HEIGHT; y++) {
+			for (int x = 0; x < WIDTH; x++) {
+				if (isFull(x, y)) {
+					g.setColor(Color.white);
+					g.fillRect(x * block_width, y * block_height, block_width - 1, block_height - 1);
+		            g.setColor(Color.blue);
+		            g.drawRect(x * block_width, y * block_height, block_width, block_height);
+				}
+			}
+		}
 	}
 	
 	public boolean isFull(int x, int y) {
@@ -17,14 +34,16 @@ class Board {
 		int xc = center.x, yc = center.y, x, y;
 		Point[] relativeBlocks = piece.getBlocks();
 		
-		boolean collision = isFull(xc, yc) || xc < 0 || xc >= WIDTH || y < 0;
+		// System.out.println("xc, yc : " + xc + ", " + yc);
+		boolean collision = ((xc < 0) || (xc >= WIDTH) || (yc < 0) || (isFull(xc, yc)));
 		for (Point block : relativeBlocks) {
 			if (collision) {
 				break;
 			} else {
 				x = xc + block.x;
-				y = xc + block.y;
-				collision = isFull(x, y) || x < 0 || x >= WIDTH || y < 0;
+				y = yc + block.y;
+				// System.out.println("x, y : " + (xc + block.x) + ", " + (yc + block.y));
+				collision = ((x < 0) || (x >= WIDTH) || (y < 0) || (isFull(x, y)));
 			}
 		}
 		
@@ -33,12 +52,14 @@ class Board {
 	
 	public void merge(Piece piece) {
 		Point center = piece.getCenter();
+		int xc = center.x, yc = center.y;
 		Point[] relativeBlocks = piece.getBlocks();
-		
-		data[center.y][center.x] = true;
+		data[yc][xc] = true;
 		for (Point block : relativeBlocks) {
-			data[block.y][block.x] = true;
+			// System.out.println("x, y : " + (xc + block.x) + ", " + (yc + block.y));
+			data[yc + block.y][xc + block.x] = true;
 		}
+		clean();
 	}
 	
 	public void clean() {
@@ -78,4 +99,6 @@ class Board {
 			}
 		}
 	}
+	
+	
 }

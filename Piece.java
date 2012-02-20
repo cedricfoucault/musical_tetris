@@ -12,31 +12,74 @@ public class Piece {
 	public static final int START_X = 5;
 	public static final int START_Y = 19;
 	private static final Random shapeGenerator = new Random();
+	
 	// CONSTRUCTORS
-	Piece(Shape shape, int orientation, Point center, Point[] blocks) {
-		this.shape = shape;
-		this.orientation = orientation;
-		this.center = center;
-		this.blocks = blocks;
+	// Piece(Shape shape, int orientation, Point center, Point[] blocks) {
+	// 	this.shape = shape;
+	// 	this.orientation = orientation;
+	// 	this.center = center;
+	// 	this.blocks = blocks;
+	// }
+	Piece(Piece p) {
+		shape = p.shape;
+		orientation = p.orientation;
+		center = new Point(p.center);
+		blocks = p.blocks;
 	}
+	
 	Piece(Shape shape, int orientation, Point center) {
 		this.shape = shape;
 		this.orientation = orientation;
 		this.center = center;
-		this.blocks = TetrominoesCatalog.getData(shape, orientation);	
+		this.blocks = TetrominoesCatalog.getBlocks(shape, orientation);	
 	}
 	
-	
 	Piece(Shape shape, int orientation, int x, int y) {
-		Piece(shape, orientation, new Point(x, y));
+		this.shape = shape;
+		this.orientation = orientation;
+		this.center = new Point(x, y);
+		this.blocks = TetrominoesCatalog.getBlocks(shape, orientation);
+		// Piece(shape, orientation, new Point(x, y));
 	}
 	
 	Piece(Shape shape, int orientation) {
-		Piece(shape, orientation, START_X, START_Y);
+		this.shape = shape;
+		this.orientation = orientation;
+		this.center = new Point(START_X, START_Y);
+		this.blocks = TetrominoesCatalog.getBlocks(shape, orientation);
+		// Piece(shape, orientation, START_X, START_Y);
 	}
 	
 	Piece(Shape shape) {
-		Piece(shape, START_ORIENTATION);
+		this.shape = shape;
+		this.orientation = START_ORIENTATION;
+		this.center = new Point(START_X, START_Y);
+		this.blocks = TetrominoesCatalog.getBlocks(shape, orientation);
+		// Piece(shape, START_ORIENTATION);
+	}
+	
+	// GETTERS
+	Point getCenter() {
+		return center;
+	}
+	
+	Point[] getBlocks() {
+		return blocks;
+	}
+	
+	void draw(Graphics2D g, int frame_width, int frame_height) {
+		int block_width = frame_width / Board.WIDTH;
+		int block_height = frame_height / Board.HEIGHT;
+		g.setColor(Color.white);
+		g.fillRect(center.x * block_width, center.y * block_height, block_width - 1, block_height - 1);
+		g.setColor(Color.blue);
+		g.drawRect(center.x * block_width, center.y * block_height, block_width, block_height);
+		for (Point block : blocks) {
+			g.setColor(Color.white);
+			g.fillRect((center.x + block.x) * block_width, (center.y + block.y) * block_height, block_width - 1, block_height - 1);
+			g.setColor(Color.blue);
+			g.drawRect((center.x + block.x) * block_width, (center.y + block.y) * block_height, block_width, block_height);
+		}
 	}
 	
 	// moves the piece accordingly 
@@ -63,11 +106,11 @@ public class Piece {
 	
 	// returns a copy of the piece
 	public Piece copy() {
-		return (new Piece(shape, orientation, center.getLocation(), blocks));
+		return (new Piece(this));
 	}
 	
 	public static Piece getRandomPiece() {
-		shape = Shape.fromInt(shapeGenerator.nextInt(Shape.NB));
+		Shape shape = Shape.fromInt(shapeGenerator.nextInt(Shape.NB));
 		return new Piece(shape);
 	}
 }
