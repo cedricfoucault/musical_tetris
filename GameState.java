@@ -1,16 +1,12 @@
 public class GameState {
 	public int level;
 	public int score;
-	private long fallCountdown; // in millisecond
-	private long motionCountdown;
 	public boolean gameOver;
 	private boolean paused;
 	private Board board;
 	private boolean isActivePiece;
 	private Piece currentPiece;
 	private Piece nextPiece;
-	private static final long DROP_MOTION_DELAY = 33; // ~ 30 cells / s
-	private static final long HORIZONTAL_MOTION_DELAY = 100; // 10 cells / s
 	
 	GameState(int level) {
 		this.level = level;
@@ -19,10 +15,10 @@ public class GameState {
 		paused = false;
 		board = new Board();
 		isActivePiece = false;
-		// currentPiece = Piece.getRandomPiece();
-		nextPiece = Piece.getRandomPiece();
+		// currentPiece = Piece.newRandomPiece();
+		nextPiece = Piece.newRandomPiece();
 		// resetFallCountdown();
-		fallCountdown = 0;
+		// fallCountdown = 0;
 	}
 	
 	// GETTERS
@@ -33,78 +29,15 @@ public class GameState {
 		return currentPiece;
 	}
 	
-	public void updateState(long dTime) {
-		if (isOver() || isPaused()) {
-			System.out.println("gameover");
-			return;
-		}
-		// System.out.println(fallCountdown);
-		updateFallCountdown(dTime);
-		if (!isFallTimeOut()) {
-			return;
-		}
-		if (isActivePiece()) {
-			if (canFallPiece()) {
-				moveDownPiece();
-			} else {
-				mergePiece();
-			}
-		} else {
-			if (canSpawnPiece()) {
-				spawnPiece();
-			} else {
-				setGameOver();
-			}
-		}
-		resetFallCountdown();
+	int getLevel() {
+		return level;
 	}
 	
-	public void updatePieceMotion(Move movetype, long dTime) {
-		if (isOver() || isPaused() || !isActivePiece()) {
-			return;
-		}
-		updateMotionCountdown(dTime);
-		if (!isMotionTimeOut()) {
-			return;
-		}
-		if (canMovePiece(movetype)) {
-			movePiece(movetype);
-		}
-		resetMotionCountdown(movetype);
-		
-	}
-	
-	boolean isOver() {
+	public boolean isOver() {
 		return gameOver;
 	}
-	boolean isPaused() {
+	public boolean isPaused() {
 		return paused;
-	}
-	void updateFallCountdown(double dTime) {
-		fallCountdown -= dTime;
-	}
-	void updateMotionCountdown(double dTime) {
-		motionCountdown -= dTime;
-	}
-	boolean isFallTimeOut() {
-		return fallCountdown <= 0;
-	}
-	boolean isMotionTimeOut() {
-		return motionCountdown <= 0;
-	}
-	void resetFallCountdown() {
-		fallCountdown = 50 * (11 - level);
-	}
-	
-	void resetMotionCountdown(Move movetype) {
-		switch(movetype) {
-			case DROP: {
-				motionCountdown = DROP_MOTION_DELAY;	
-			}
-			default: {
-				motionCountdown = HORIZONTAL_MOTION_DELAY;
-			}
-		}
 	}
 	
 	boolean isActivePiece() {
@@ -124,14 +57,14 @@ public class GameState {
 	
 	boolean canSpawnPiece() {
 		return !board.willCollide(nextPiece);
-		// return board.isFull(Piece.START_X, Piece.START_Y);
 	}
 	
 	void spawnPiece() {
 		currentPiece = nextPiece;
-		nextPiece = Piece.getRandomPiece();
+		nextPiece = Piece.newRandomPiece();
 		isActivePiece = true;
 	}
+
 	void setGameOver() {
 		gameOver = true;
 	}
