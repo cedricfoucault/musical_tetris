@@ -49,14 +49,24 @@ public class Piece {
 		return relativePoints;
 	}
 	
-	void draw(Graphics2D g, int frame_width, int frame_height) {
-		// int block_width = frame_width / Board.WIDTH;
-		// int block_height = frame_height / Board.HEIGHT;
-		int block_width = Block.SIZE.width;
-		int block_height = Block.SIZE.height;
-		blockType.draw(g, block_width * center.x, block_height * (Board.HEIGHT - (center.y + 1)), block_width, block_height);
+	void draw(Graphics2D g) {
+		int blockWidth = Block.SIZE.width;
+		int blockHeight = Block.SIZE.height;
+		int centerX = 2, centerY = 2;
+		blockType.draw(g, blockWidth * centerX, blockHeight * (4 - (centerY + 1)), blockWidth, blockHeight);
 		for (Point point : relativePoints) {
-			blockType.draw(g, block_width * (center.x + point.x), block_height * (Board.HEIGHT - (center.y + point.y + 1)), block_width, block_height);
+			blockType.draw(g, blockWidth * (centerX + point.x), blockHeight * (4 - (centerY + point.y + 1)), blockWidth, blockHeight);
+		}
+	}
+	
+	void drawOnBoard(Graphics2D g) {
+		int blockWidth = Block.SIZE.width;
+		int blockHeight = Block.SIZE.height;
+		
+		blockType.draw(g, blockWidth * center.x, blockHeight * (Board.HEIGHT - (center.y + 1)), blockWidth, blockHeight);
+		
+		for (Point point : relativePoints) {
+			blockType.draw(g, blockWidth * (center.x + point.x), blockHeight * (Board.HEIGHT - (center.y + point.y + 1)), blockWidth, blockHeight);
 		}
 	}
 	

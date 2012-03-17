@@ -1,22 +1,15 @@
 import java.awt.event.*;
+import java.util.*;
 
-class FullRowEvent extends ActionEvent {
-	// the indices of the full rows
-	private int[] fullRows;
-	// the number of full rows
-	private int nRows;
+class FullRowsEvent extends ActionEvent {
+	private LinkedList<Integer> fullRows;
 		
-	FullRowEvent(Object source, int[] fullRows) {
+	FullRowsEvent(Object source, LinkedList<Integer> fullRows) {
 		super(source, 0, "full row");
 		this.fullRows = fullRows;
-		// this.nRows = fullRows.length();
 	}
 	
-	public int[] getFullRows() {
+	public LinkedList<Integer>[] getFullRows() {
 		return fullRows;
-	}
-	
-	public int getNRows() {
-		return nRows;
 	}
 }

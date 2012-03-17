@@ -1,3 +1,5 @@
+import java.awt.Graphics2D;
+
 public class GameState {
 	public int level;
 	public int score;
@@ -31,6 +33,10 @@ public class GameState {
 	
 	int getLevel() {
 		return level;
+	}
+	
+	int getScore() {
+		return score;
 	}
 	
 	public boolean isOver() {
@@ -78,11 +84,33 @@ public class GameState {
 	}
 	
 	boolean canMovePiece(Move movetype) {
-		Piece movedPiece = (currentPiece.copy());
-		movedPiece.move(movetype);
-		return !(board.willCollide(movedPiece));
+		if (!isPaused() && !isOver()) {
+			Piece movedPiece = (currentPiece.copy());
+			movedPiece.move(movetype);
+			return !(board.willCollide(movedPiece));
+		} else {
+			return false;
+		}
 	}
 	void movePiece(Move movetype) {
+		if (movetype == Move.DROP) {
+			score++;
+		}
 		currentPiece.move(movetype);
 	}
+	
+	public void drawNextPiece(Graphics2D graphics) {
+		nextPiece.draw(graphics);
+	}
+	
+	public void drawBoard(Graphics2D graphics) {
+		board.draw(graphics);
+		if (isActivePiece()) {
+			currentPiece.drawOnBoard(graphics);
+		}
+		if (isPaused()) {
+			graphics.drawString("Paused", Board.SIZE.width / 2 - 25, Board.SIZE.height / 2 - 25);
+		}
+	}
+	
 }

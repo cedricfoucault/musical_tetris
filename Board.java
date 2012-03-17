@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.*;
 
 class Board {
 	public static final int HEIGHT = 20;
@@ -62,6 +63,35 @@ class Board {
 		clean();
 	}
 	
+	public LinkedList<Integer> detectFullRows() {
+		LinkedList<Integer> fullRows = new LinkedList<Integer>();
+		int i, j;
+		boolean isFullRow;
+		boolean oneFullRow = false;
+		
+		for (i = 0; i < HEIGHT; i++) {
+			// check if the current row is full
+			isFullRow = true;
+			for (j = 0; j < WIDTH; j++) {
+				// loop invariant : 
+				// isFull == 
+				// "every box between 0 and j in the ith row is full"
+				if (data[i][j].isEmpty()) {
+					isFullRow = false;
+					break;
+				}
+			}
+			if (isFullRow) {
+				oneFullRow = true;
+				fullRows.add(new Integer(i));
+			}
+		}
+		
+		if (oneFullRow) {
+			
+		}
+	}
+	
 	public void clean() {
 		int i, j, gap;
 		boolean isFullRow;
@@ -79,7 +109,8 @@ class Board {
 			isFullRow = true;
 			for (j = 0; j < WIDTH; j++) {
 				// loop invariant : 
-				// isFull == "every box between 0 and j in the ith row is full"
+				// isFull 
+				// == "every box between 0 and j in the ith row is full"
 				if (data[i][j].isEmpty()) {
 					isFullRow = false;
 					break;
@@ -100,9 +131,7 @@ class Board {
 		}
 	}
 	
-	public void draw(Graphics2D g, int frame_width, int frame_height) {
-		int block_width = frame_width / WIDTH;
-		int block_height = frame_height / HEIGHT;
+	public void draw(Graphics2D g) {
 		for (int y = 0; y < HEIGHT; y++) {
 			for (int x = 0; x < WIDTH; x++) {
 					data[y][x].draw(g);

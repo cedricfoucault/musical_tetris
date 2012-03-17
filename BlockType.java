@@ -25,13 +25,15 @@ public enum BlockType {
 	}
 	
 	public void draw(Graphics2D g, int x, int y, int width, int height) {
-		BasicStroke stroke = new BasicStroke(2);
-		g.setStroke(stroke);
-		g.setColor(color);
-		g.fillRect(x, y, width, height);
 		if (this != EMPTY) {
+			BasicStroke stroke = new BasicStroke(2);
+			Stroke oldStroke = g.getStroke();
+			g.setStroke(stroke);
+			g.setColor(color);
+			g.fillRect(x, y, width - 1, height - 1);
 			g.setColor(Color.black);
-			g.drawRect(x, y, width, height);	
+			g.drawRect(x, y, width - 1, height - 1);
+			g.setStroke(oldStroke);
 		}
 	}
 	

@@ -25,6 +25,10 @@ public class Block {
 		this.blockType = blockType;
 	}
 	
+	public void fall(int nRows) {
+		coordinates.y -= nRows;
+	}
+	
 	public void empty() {
 		blockType = BlockType.EMPTY;
 	}

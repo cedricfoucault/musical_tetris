@@ -110,10 +110,10 @@ public class GameController {
 	public class FullRowsHandler {
 		FullRowsHandler() {
 		}
-		
 		public void handleFullRows(FullRowEvent e) {
-			int[] fullRows;
-			// state.cleanFullRows();
+			LinkedList<Integer> fullRows = e.getFullRows();
+			
+			
 		}
 		
 	}
@@ -147,7 +147,17 @@ public class GameController {
 				// System.out.println("down pressed!");
 				// if (state.canMovePiece(Move.DROP)) {
 				// 					state.movePiece(Move.DROP);
-				// 				}
+				// 	}
+			} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				// System.out.println("space pressed!");
+				if (state.isPaused()) {
+					state.resume();
+				} else {
+					state.pause();
+				}
+			} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				// System.out.print("escape pressed!");
+				System.exit(0);
 			}
 			keyPressTime = e.getWhen();
 		} 
@@ -163,25 +173,7 @@ public class GameController {
 			} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 				dropPressed = false;
 			}
-			// if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			// 	pausePressed = false;
-			// }
 			longKeyPress = false;
-		}
-
-		public void keyTyped(KeyEvent e) {
-			// if we hit escape, then quit the game
-			if (e.getKeyChar() == KeyEvent.VK_ESCAPE) {
-				System.exit(0);
-			} 	else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-				// pausePressed = true;
-				// System.out.println("space pressed!");
-				if (state.isPaused()) {
-					state.resume();
-				} else {
-					state.pause();
-				}
-			}
 		}
 	}
 	
