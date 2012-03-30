@@ -6,21 +6,21 @@ import java.awt.image.BufferStrategy;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.BoxLayout;
 
 public class Game {
 	private final JFrame frame;
-	private final JPanel panel;
-	// private final BoardPanel boardPane;
 	
 	private boolean running;
 	private final GameState state;
 	private final GameController controller;
-	private static final int RESOLUTION_HEIGHT = 600;
-	private static final int RESOLUTION_WIDTH = 500;
-	private static final Dimension RESOLUTION = new Dimension(800, 620);
+	// private static final int RESOLUTION_HEIGHT = 600;
+	// private static final int RESOLUTION_WIDTH = 500;
+	private static final Dimension RESOLUTION = new Dimension(900, 620);
 	private static final Dimension BOARD_FRAME_SIZE = new Dimension(300, 590);
 	// private static final int X_MARGIN = 10;
 	// 	private static final int Y_MARGIN = 10;
@@ -31,28 +31,26 @@ public class Game {
 		// init the state of the game
 		state = new GameState(1);
 		controller = new GameController(state);
+		GameSound.init();
+		// init the game panel
+		GamePanel panel = new GamePanel(state,
+			RESOLUTION.width, RESOLUTION.height,
+			BOARD_FRAME_SIZE.width, BOARD_FRAME_SIZE.height, MARGIN);
+		Toolkit toolkit =  Toolkit.getDefaultToolkit ();
+		Dimension screenSize = toolkit.getScreenSize();
 		// open the game window
 		frame = new JFrame("Tetris");
-		panel = new JPanel();
-		// and set up the resolution of the game
-		panel.setPreferredSize(RESOLUTION);
-		panel.setBackground(new Color(248, 248, 255));
-		panel.setDoubleBuffered(true); 
-		// panel.setBackground(Color.white);
-		// panel.setLayout(null);
-		// finally make the window visible
 		frame.setContentPane(panel);
 		frame.pack();
 		frame.setResizable(false);
+		frame.setLocation((screenSize.width - RESOLUTION.width)  / 2,
+				(screenSize.height - RESOLUTION.height) / 2);
 		frame.setVisible(true);
 		// add listeners to our canvas so we respond to keypressed and window shut down
-		frame.addKeyListener(controller.getInputHandler());
-		frame.addWindowListener(controller.getWindowHandler());
-		// add our board canvas to the game
-		BoardPanel boardPane = new BoardPanel(state, BOARD_FRAME_SIZE, MARGIN);
-		panel.add(boardPane);
-		GUIPanel guiPane = new GUIPanel(state, 180, 590, MARGIN);
-		panel.add(guiPane);
+		frame.setFocusable(true);
+		frame.addKeyListener(controller.new KeyInputHandler());
+		frame.addWindowListener(controller.new WindowHandler());
+		frame.setFocusTraversalKeysEnabled(false);
 	}
 	
 	private void updateGraphics() {
@@ -79,12 +77,9 @@ public class Game {
 				controller.updateState(dTime);
 				controller.handleInputMotion(dTime, lastLoopTime);
 			}
-			
+			// GRAPHICS
 			updateGraphics();
-
-			// finally pause for a bit. Note: this should run us at about
-			// 100 fps but on windows this might vary each loop due to
-			// a bad implementation of timer
+			// finally pause for a bit.
 			try { 
 				Thread.sleep(10); 
 			} catch (Exception e) {}

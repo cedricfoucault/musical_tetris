@@ -1,15 +1,13 @@
 import java.awt.event.*;
 import java.util.*;
 
-class FullRowsEvent extends ActionEvent {
-	private LinkedList<Integer> fullRows;
+public class FullRowEvent extends ActionEvent {
+	public LinkedList<Integer> fullRows;
+	public int nRows;
 		
-	FullRowsEvent(Object source, LinkedList<Integer> fullRows) {
+	FullRowEvent(Object source, LinkedList<Integer> fullRows, int nRows) {
 		super(source, 0, "full row");
 		this.fullRows = fullRows;
-	}
-	
-	public LinkedList<Integer>[] getFullRows() {
-		return fullRows;
+		this.nRows = nRows;
 	}
 }

@@ -11,7 +11,8 @@ public enum BlockType {
 	Z     (Color.red),
 	L     (Color.orange),
 	J     (Color.blue),
-	T     (new Color(148, 0, 211)); // purple
+	T     (new Color(148, 0, 211)),
+	KILL  (Color.gray);
 	
 	public static final int NB = 7;
 	private final Color color;

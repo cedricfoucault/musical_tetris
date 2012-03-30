@@ -7,6 +7,7 @@ public class Block {
 	private BlockType blockType;
 	private Point coordinates;
 	static Dimension SIZE;
+	boolean killed;
 	
 	public static void setSize(Dimension size) {
 		SIZE = size;
@@ -19,11 +20,17 @@ public class Block {
 	public Block(Point coordinates) {
 		this.coordinates = coordinates;
 		blockType = BlockType.EMPTY;
+		killed = false;
 	}
 	
 	public void setType(BlockType blockType) {
 		this.blockType = blockType;
 	}
+	
+	public void fall() {
+		coordinates.y--;
+	}
+	
 	
 	public void fall(int nRows) {
 		coordinates.y -= nRows;
@@ -41,13 +48,17 @@ public class Block {
 		return blockType.equals(BlockType.EMPTY);
 	}
 	
-	private void kill() {
-		blockType = BlockType.EMPTY;
+	public void kill() {
+		killed = true;
 	}
 	
 	public void draw(Graphics2D g) {
 		int graph_x = coordinates.x * SIZE.width;
 		int graph_y = Board.SIZE.height - (coordinates.y + 1) * SIZE.height;
-		blockType.draw(g, graph_x, graph_y, SIZE.width, SIZE.height);
+		if (killed) {
+			BlockType.KILL.draw(g, graph_x, graph_y, SIZE.width, SIZE.height);
+		} else {
+			blockType.draw(g, graph_x, graph_y, SIZE.width, SIZE.height);
+		}
 	}
 }

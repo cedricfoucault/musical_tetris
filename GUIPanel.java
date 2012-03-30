@@ -29,19 +29,17 @@ public class GUIPanel extends JPanel {
 		setPreferredSize(new Dimension(width, height));
 		// setBorder(BorderFactory.createLineBorder(new Color(119, 136, 153), borderSize));
 		setBackground(new Color(248, 248, 255));
-		// setBackground(new Color(248, 248, 255));
+		setAlignmentX(RIGHT_ALIGNMENT);
 		// this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
 		NextPiecePanel nextPiecePanel = new NextPiecePanel(state, (width * 7) / 8, (width * 7) / 8, borderSize);
 		this.add(nextPiecePanel);
-		ScorePanel scorePane = new ScorePanel(state, (width * 7) / 8, 140, borderSize);
-		// JPanel scorePane = new JPanel();
-		// JLabel scoreLabel = new JLabel("Score");
-		// scorePane.setPreferredSize(new Dimension(width, 100));
-		// scorePane.setBackground(new Color(248, 248, 255));
-		// scorePane.add(scoreLabel);
-		// scorePane.add(scoreSubPane);
+		ScorePanel scorePane = new ScorePanel(state, (width * 7) / 8, 120, borderSize);
+		LinesPanel linesPane = new LinesPanel(state, (width * 7) / 8, 120, borderSize);
+		LevelPanel levelPane = new LevelPanel(state, (width * 7) / 8, 120, borderSize);
 		this.add(scorePane);
+		this.add(linesPane);
+		this.add(levelPane);
 	}
 }
 
@@ -153,6 +151,188 @@ class ScorePanel extends JPanel {
 			int strHeight = fm.getHeight();
 	        // g2D.drawGlyphVector(gv, width / 2 - GUIFonts.SIZE, (height * 7) / 8);
 	        g2D.drawString(scoreStr, (width - strWidth) / 2, 
+									(height + strHeight) / 2);
+			g2D.setFont(baseFont);
+		}
+	}	
+}
+
+class LinesPanel extends JPanel {
+	private int width, height;
+	private GameState state;
+	private int labelFontSize = 42;
+	private int digitsFontSize = 48;
+	
+	public LinesPanel(GameState state, int width, int height, int borderSize) {
+		super();
+		this.state = state;
+		this.width = width;
+		this.height = height;
+		setPreferredSize(new Dimension(width, height));
+		setAlignmentX(CENTER_ALIGNMENT);
+		setBackground(new Color(248, 248, 255));
+		LinesLabel linesLab = new LinesLabel(width, 
+				((height / 2) * labelFontSize) / digitsFontSize,
+				borderSize);
+		DigitsPanel digitPanel = new DigitsPanel(width, 
+				((height / 2) * digitsFontSize) / labelFontSize,
+				borderSize);
+		this.add(linesLab);
+		this.add(digitPanel);
+	}
+	
+	class LinesLabel extends JPanel {
+		private int width, height;
+		
+		public LinesLabel(int width, int height, int borderSize) {
+			super();
+			this.width = width;
+			this.height = height;
+			setPreferredSize(new Dimension(width, height));
+			setAlignmentX(CENTER_ALIGNMENT);
+			setBackground(new Color(248, 248, 255));
+		}
+		
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			Graphics2D g2D = (Graphics2D) g;
+			String str = "LINES";
+			Font baseFont = g2D.getFont();
+			g2D.setFont(GUIFonts.getTetrisFont((float)labelFontSize));
+			FontMetrics fm = g2D.getFontMetrics();
+			int strWidth = fm.stringWidth(str);
+			int strHeight = fm.getHeight();
+			g2D.drawString(str, (width - strWidth) / 2, 
+									(height + strHeight) / 2);
+			g2D.setFont(baseFont);
+		}
+	}
+	
+	class DigitsPanel extends JPanel {
+		private int width, height;
+
+		public DigitsPanel(int width, int height, int borderSize) {
+			super();
+			// this.state = state;
+			this.width = width;
+			this.height = height;
+			// hello = GUIFonts.getTetrisFont((float)digitsFontSize);
+			setPreferredSize(new Dimension(width, height));
+			setAlignmentX(CENTER_ALIGNMENT);
+			setBackground(new Color(248, 248, 255));
+			// Border border = BorderFactory.createLineBorder(new Color(119, 136, 153), borderSize);
+			// setBorder(border);
+			// setBackground(Color.white);
+		}
+
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			// g.setColor(Color.black);
+			// g.drawRect(0, 0, width - 1, height - 1);
+			// g.fillRect(0, 0, width - 1, height - 1);
+			// g.setColor(Color.white);
+			Graphics2D g2D = (Graphics2D) g;
+			String linesStr = Integer.toString(state.getLinesCompleted());
+	        // FontRenderContext frc = g2D.getFontRenderContext();
+	        //         GlyphVector gv = (GUIFonts.TETRIS_FONT).createGlyphVector(frc, scoreStr);
+			Font baseFont = g2D.getFont();
+			g2D.setFont(GUIFonts.getTetrisFont((float)digitsFontSize));
+			FontMetrics fm = g2D.getFontMetrics();
+			int strWidth = fm.stringWidth(linesStr);
+			int strHeight = fm.getHeight();
+	        // g2D.drawGlyphVector(gv, width / 2 - GUIFonts.SIZE, (height * 7) / 8);
+	        g2D.drawString(linesStr, (width - strWidth) / 2, 
+									(height + strHeight) / 2);
+			g2D.setFont(baseFont);
+		}
+	}	
+}
+
+class LevelPanel extends JPanel {
+	private int width, height;
+	private GameState state;
+	private int labelFontSize = 42;
+	private int digitsFontSize = 48;
+	
+	public LevelPanel(GameState state, int width, int height, int borderSize) {
+		super();
+		this.state = state;
+		this.width = width;
+		this.height = height;
+		setPreferredSize(new Dimension(width, height));
+		setAlignmentX(CENTER_ALIGNMENT);
+		setBackground(new Color(248, 248, 255));
+		LevelLabel linesLab = new LevelLabel(width, 
+				((height / 2) * labelFontSize) / digitsFontSize,
+				borderSize);
+		DigitsPanel digitPanel = new DigitsPanel(width, 
+				((height / 2) * digitsFontSize) / labelFontSize,
+				borderSize);
+		this.add(linesLab);
+		this.add(digitPanel);
+	}
+	
+	class LevelLabel extends JPanel {
+		private int width, height;
+		
+		public LevelLabel(int width, int height, int borderSize) {
+			super();
+			this.width = width;
+			this.height = height;
+			setPreferredSize(new Dimension(width, height));
+			setAlignmentX(CENTER_ALIGNMENT);
+			setBackground(new Color(248, 248, 255));
+		}
+		
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			Graphics2D g2D = (Graphics2D) g;
+			String str = "LEVEL";
+			Font baseFont = g2D.getFont();
+			g2D.setFont(GUIFonts.getTetrisFont((float)labelFontSize));
+			FontMetrics fm = g2D.getFontMetrics();
+			int strWidth = fm.stringWidth(str);
+			int strHeight = fm.getHeight();
+			g2D.drawString(str, (width - strWidth) / 2, 
+									(height + strHeight) / 2);
+			g2D.setFont(baseFont);
+		}
+	}
+	
+	class DigitsPanel extends JPanel {
+		private int width, height;
+
+		public DigitsPanel(int width, int height, int borderSize) {
+			super();
+			// this.state = state;
+			this.width = width;
+			this.height = height;
+			// hello = GUIFonts.getTetrisFont((float)digitsFontSize);
+			setPreferredSize(new Dimension(width, height));
+			setAlignmentX(CENTER_ALIGNMENT);
+			setBackground(new Color(248, 248, 255));
+			// Border border = BorderFactory.createLineBorder(new Color(119, 136, 153), borderSize);
+			// setBorder(border);
+			// setBackground(Color.white);
+		}
+
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			// g.setColor(Color.black);
+			// g.drawRect(0, 0, width - 1, height - 1);
+			// g.fillRect(0, 0, width - 1, height - 1);
+			// g.setColor(Color.white);
+			Graphics2D g2D = (Graphics2D) g;
+			String levelStr = Integer.toString(state.getLevel());
+	        // FontRenderContext frc = g2D.getFontRenderContext();
+	        //         GlyphVector gv = (GUIFonts.TETRIS_FONT).createGlyphVector(frc, scoreStr);
+			Font baseFont = g2D.getFont();
+			g2D.setFont(GUIFonts.getTetrisFont((float)digitsFontSize));
+			FontMetrics fm = g2D.getFontMetrics();
+			int strWidth = fm.stringWidth(levelStr);
+			int strHeight = fm.getHeight();
+	        // g2D.drawGlyphVector(gv, width / 2 - GUIFonts.SIZE, (height * 7) / 8);
+	        g2D.drawString(levelStr, (width - strWidth) / 2, 
 									(height + strHeight) / 2);
 			g2D.setFont(baseFont);
 		}

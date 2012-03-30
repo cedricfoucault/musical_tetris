@@ -2,6 +2,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.*;
 
 public class GameController {
 	private GameState state;
@@ -18,6 +19,8 @@ public class GameController {
 	
 	GameController(GameState state) {
 		this.state = state;
+		state.addBoardListener(new BoardController());
+		state.addStateListener(new StateController());
 		keyHandler = new KeyInputHandler();
 		windowHandler = new WindowHandler();
 		initFallCountdown();
@@ -107,56 +110,64 @@ public class GameController {
 		}
 	}
 	
-	public class FullRowsHandler {
-		FullRowsHandler() {
+	public class BoardController implements BoardListener {
+		BoardController() {}
+		public void fullRowDetected(FullRowEvent e) {
+			state.killRows(e.fullRows);
+			GameSound.playLineClear();
+			state.incLinesCompleted(e.nRows);
+			state.incScore(e.nRows);
 		}
-		public void handleFullRows(FullRowEvent e) {
-			LinkedList<Integer> fullRows = e.getFullRows();
-			
-			
-		}
-		
+		public void land() {
+			GameSound.playLand();
+		}		
 	}
 	
-	public class KeyInputHandler extends KeyAdapter {
-		
-		KeyInputHandler() {
+	public class StateController implements StateListener {
+		StateController(){}
+		public void levelUp() {
+			GameSound.playLevelUp();
 		}
+	}
+	
+	public class KeyInputHandler extends KeyAdapter {	
+		KeyInputHandler() {}
 
 		public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				// left move
 				leftPressed = true;
-				// System.out.println("left pressed!");
 				if (state.canMovePiece(Move.LEFT)) {
 					state.movePiece(Move.LEFT);
 				}
 			} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				// right move
 				rightPressed = true;
-				// System.out.println("right pressed!");
 				if (state.canMovePiece(Move.RIGHT)) {
 					state.movePiece(Move.RIGHT);
 				}
 			} else if (e.getKeyCode() == KeyEvent.VK_UP) {
+				// rotate
 				rotatePressed = true;
-				// System.out.println("up pressed!");
 				if (state.canMovePiece(Move.ROTATE)) {
 					state.movePiece(Move.ROTATE);
+					GameSound.playRotate();
 				}
 			} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				// soft drop
 				dropPressed = true;
-				// System.out.println("down pressed!");
-				// if (state.canMovePiece(Move.DROP)) {
-				// 					state.movePiece(Move.DROP);
-				// 	}
+			} else if (e.getKeyCode() == KeyEvent.VK_TAB){
+				// hard drop
+				state.hardDropPiece();
 			} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-				// System.out.println("space pressed!");
+				// pause
 				if (state.isPaused()) {
 					state.resume();
 				} else {
 					state.pause();
 				}
 			} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-				// System.out.print("escape pressed!");
+				// exit
 				System.exit(0);
 			}
 			keyPressTime = e.getWhen();
@@ -177,7 +188,7 @@ public class GameController {
 		}
 	}
 	
-	private class WindowHandler extends WindowAdapter {
+	public class WindowHandler extends WindowAdapter {
 		public void windowClosing(WindowEvent e)
         {
             System.exit(0);

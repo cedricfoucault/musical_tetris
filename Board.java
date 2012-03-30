@@ -1,15 +1,24 @@
 import java.awt.*;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import javax.swing.*;
+import java.awt.event.*;
 
 class Board {
 	public static final int HEIGHT = 20;
 	public static final int WIDTH = 10;
+	public static Dimension SIZE; // the graphical dimension of the board
+	private static final int ROW_UPDATE_DELAY = 800;
 	private Block[][] data;
-	static Dimension SIZE; // the graphical dimension of the board
+	private BoardListener listener;
 	
 	Board() {
 		data = new Block[HEIGHT][WIDTH];
 		initData();
+	}
+	
+	void addBoardListener(BoardListener bl) {
+		listener = bl;
 	}
 	
 	private void initData() {
@@ -60,14 +69,16 @@ class Board {
 		for (Point point : relativePoints) {
 			data[yc + point.y][xc + point.x].setType(blockType);
 		}
-		clean();
+		// clean();
+		listener.land();
+		detectFullRows();
 	}
 	
-	public LinkedList<Integer> detectFullRows() {
+	public void detectFullRows() {
 		LinkedList<Integer> fullRows = new LinkedList<Integer>();
 		int i, j;
 		boolean isFullRow;
-		boolean oneFullRow = false;
+		int nFullRows = 0;
 		
 		for (i = 0; i < HEIGHT; i++) {
 			// check if the current row is full
@@ -82,51 +93,71 @@ class Board {
 				}
 			}
 			if (isFullRow) {
-				oneFullRow = true;
+				nFullRows++;
 				fullRows.add(new Integer(i));
 			}
 		}
 		
-		if (oneFullRow) {
-			
+		if (nFullRows > 0) {
+			listener.fullRowDetected(new FullRowEvent(this, fullRows, nFullRows));
 		}
 	}
 	
-	public void clean() {
-		int i, j, gap;
-		boolean isFullRow;
-
-		gap = 0;
-		for (i = 0; i < HEIGHT - gap; i++) {
-			// loop invariant : gap == the number of full rows between 0 and i
-			// collapse the pile according to the gap
-			if (gap > 0) {
-				for (j = 0 ; j < WIDTH; j++) {
-					data[i - gap][j].setType(data[i][j].getType());
-				}
-			}
-			// check if the current row is full
-			isFullRow = true;
+	public void killRows(LinkedList<Integer> fullRows) {
+		ListIterator<Integer> iterList = fullRows.listIterator(0);
+		int row, j;
+		while (iterList.hasNext()) {
+		 	row = iterList.next().intValue();
 			for (j = 0; j < WIDTH; j++) {
-				// loop invariant : 
-				// isFull 
-				// == "every box between 0 and j in the ith row is full"
-				if (data[i][j].isEmpty()) {
-					isFullRow = false;
-					break;
-				}
-			}
-			// increment the gap if the current row is full
-			if (isFullRow) {
-				gap++;
+				data[row][j].kill();
 			}
 		}
-
-		// end of loop : i == BOARD_HEIGHT - gap
-		// each full row leads a row at the top of the board to empty itself
-		for (; i < HEIGHT; i++) {
-			for (j = 0; j < WIDTH; j++) {
-				data[i][j].empty();
+		RowUpdater rowUpdater = new RowUpdater(fullRows);
+		Timer timer = new Timer(ROW_UPDATE_DELAY, rowUpdater);
+		timer.setRepeats(false);
+		timer.start();
+	}
+	
+	private class RowUpdater implements ActionListener {
+		private LinkedList<Integer> fullRows;
+		RowUpdater(LinkedList<Integer> fullRows) {
+			this.fullRows = fullRows;
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			ListIterator<Integer> iterList = fullRows.listIterator(0);
+			int row, nextRow, i, j, gap = 0;
+			
+			if (iterList.hasNext()) {
+				nextRow = iterList.next().intValue();
+				gap++;
+			} else {
+				return;
+			}
+			
+			while (iterList.hasNext()) {
+				row = nextRow;
+			 	nextRow = iterList.next().intValue();
+				for (i = row - (gap - 1); i < (nextRow - gap); i++) {
+					for (j = 0; j < WIDTH; j++) {
+						data[i][j] = data[i + gap][j];
+						data[i][j].fall(gap);		
+					}
+				}
+				gap++;
+			}
+			
+			for (i = nextRow - (gap - 1); i < HEIGHT - gap; i++) {
+				for (j = 0; j < WIDTH; j++) {
+					data[i][j] = data[i + gap][j];
+					data[i][j].fall(gap);
+				}
+			}
+			
+			for (i = HEIGHT - gap; i < HEIGHT; i++) {
+				for (j = 0; j < WIDTH; j++) {
+					data[i][j] = new Block(j, i);
+				}
 			}
 		}
 	}
@@ -135,7 +166,6 @@ class Board {
 		for (int y = 0; y < HEIGHT; y++) {
 			for (int x = 0; x < WIDTH; x++) {
 					data[y][x].draw(g);
-					// (data[y][x]).draw(g, block_width * x, block_height * (HEIGHT - (y + 1)), block_width, block_height);
 			}
 		}
 	}
