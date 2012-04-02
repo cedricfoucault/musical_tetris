@@ -8,7 +8,7 @@ class Board {
 	public static final int HEIGHT = 20;
 	public static final int WIDTH = 10;
 	public static Dimension SIZE; // the graphical dimension of the board
-	private static final int ROW_UPDATE_DELAY = 800;
+	private static final int ROW_UPDATE_DELAY = 600;
 	private Block[][] data;
 	private BoardListener listener;
 	

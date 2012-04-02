@@ -52,7 +52,7 @@ public class Piece {
 	void draw(Graphics2D g) {
 		int blockWidth = Block.SIZE.width;
 		int blockHeight = Block.SIZE.height;
-		int centerX = 2, centerY = 2;
+		int centerX = 2, centerY = 3;
 		blockType.draw(g, blockWidth * centerX, blockHeight * (4 - (centerY + 1)), blockWidth, blockHeight);
 		for (Point point : relativePoints) {
 			blockType.draw(g, blockWidth * (centerX + point.x), blockHeight * (4 - (centerY + point.y + 1)), blockWidth, blockHeight);
@@ -98,7 +98,8 @@ public class Piece {
 	}
 	
 	public static Piece newRandomPiece() {
-		BlockType blockType = BlockType.fromInt(BLOCK_GENERATOR.nextInt(BlockType.NB) + 1);
+		BlockType blockType =
+			BlockType.fromInt(BLOCK_GENERATOR.nextInt(BlockType.NB) + 1);
 		return new Piece(blockType);
 	}
 }

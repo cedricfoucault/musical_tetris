@@ -7,9 +7,10 @@ import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.BorderLayout;
 
+import javax.swing.*;
+import javax.swing.border.*;
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
-import javax.swing.border.EtchedBorder;
 
 class BoardPanel extends JPanel {
 	private final GameState state;
@@ -22,11 +23,23 @@ class BoardPanel extends JPanel {
 		this.width = width;
 		this.height = height;
 		this.margin = margin;
-		setPreferredSize(new Dimension(width, height));
-		setBorder(BorderFactory.createLineBorder(new Color(119, 136, 153), margin));
-		// setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-		setBackground(new Color(230, 236, 255));
+		Dimension size = new Dimension(width, height);
+		setMaximumSize(size);
+		setPreferredSize(size);
+		setMinimumSize(size);
 		initSizes();
+		
+		Image gray_block = BlockSprites.lightgray_block.getScaledInstance(margin,
+			margin,	Image.SCALE_DEFAULT);
+		ImageIcon icon = new ImageIcon(gray_block);
+		setBorder(BorderFactory.createMatteBorder(margin,
+			margin, margin, margin, icon));
+		// setBorder(BorderFactory.createLineBorder(new Color(119, 136, 153), margin));
+		// setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+		// setBackground(new Color(230, 236, 255));
+		setBackground(Color.BLACK);
+		setAlignmentX(CENTER_ALIGNMENT);
+		// setBackground(new Color(0, 0, 51));
     }
 	
 	public BoardPanel(GameState state, Dimension size, int margin) {

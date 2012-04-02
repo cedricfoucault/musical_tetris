@@ -1,24 +1,26 @@
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.BasicStroke;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import javax.imageio.ImageIO;
 
 public enum BlockType {
-	EMPTY (Color.lightGray), 
-	O     (Color.yellow),
-	I     (Color.cyan),
-	S     (Color.green),
-	Z     (Color.red),
-	L     (Color.orange),
-	J     (Color.blue),
-	T     (new Color(148, 0, 211)),
-	KILL  (Color.gray);
+	EMPTY (BlockSprites.gray_block), 
+	O     (BlockSprites.yellow_block),
+	I     (BlockSprites.cyan_block),
+	S     (BlockSprites.green_block),
+	Z     (BlockSprites.red_block),
+	L     (BlockSprites.orange_block),
+	J     (BlockSprites.blue_block),
+	T     (BlockSprites.purple_block),
+	KILL  (BlockSprites.gray_block);
 	
 	public static final int NB = 7;
-	private final Color color;
 	
-	private BlockType(Color color) {
-		this.color = color;
+	private final BufferedImage sprite;
+	
+	private BlockType(BufferedImage img) {
+		sprite = img;
 	}
 	
 	public static BlockType fromInt(int i) {
@@ -27,14 +29,9 @@ public enum BlockType {
 	
 	public void draw(Graphics2D g, int x, int y, int width, int height) {
 		if (this != EMPTY) {
-			BasicStroke stroke = new BasicStroke(2);
-			Stroke oldStroke = g.getStroke();
-			g.setStroke(stroke);
-			g.setColor(color);
-			g.fillRect(x, y, width - 1, height - 1);
-			g.setColor(Color.black);
-			g.drawRect(x, y, width - 1, height - 1);
-			g.setStroke(oldStroke);
+			g.drawImage(sprite,
+				x, y, x + width, y + height,
+				0, 0, sprite.getWidth(null), sprite.getHeight(null), null);
 		}
 	}
 	

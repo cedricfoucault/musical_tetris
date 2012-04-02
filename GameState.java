@@ -1,5 +1,6 @@
 import java.awt.Graphics2D;
 import java.util.LinkedList;
+import java.awt.*;
 
 public class GameState {
 	private boolean gameOver;
@@ -77,10 +78,18 @@ public class GameState {
 	private void updateLevel() {
 		int earnedLevel = 1;
 		
+		// if (linesCompleted <= 0) {
+		//   earnedLevel = 1;
+		// } else if ((linesCompleted >= 1) && (linesCompleted <= 90)) {
+		//   earnedLevel = 1 + ((linesCompleted - 1) / 10);
+		// } else if (linesCompleted >= 91) {
+		//   earnedLevel = 10;
+		// }
+		
 		if (linesCompleted <= 0) {
 		  earnedLevel = 1;
 		} else if ((linesCompleted >= 1) && (linesCompleted <= 90)) {
-		  earnedLevel = 1 + ((linesCompleted - 1) / 10);
+		  earnedLevel = 1 + ((linesCompleted - 1) / 4);
 		} else if (linesCompleted >= 91) {
 		  earnedLevel = 10;
 		}
@@ -125,10 +134,13 @@ public class GameState {
 	}
 	
 	void movePiece(Move movetype) {
+		currentPiece.move(movetype);
 		if (movetype == Move.DROP) {
 			score++;
-		}
-		currentPiece.move(movetype);
+			if (!canFallPiece()) {
+				GameSound.playLand();
+			}
+		} 
 	}
 	
 	void mergePiece() {
@@ -167,12 +179,16 @@ public class GameState {
 	}
 	
 	public void drawBoard(Graphics2D graphics) {
-		board.draw(graphics);
-		if (isActivePiece()) {
-			currentPiece.drawOnBoard(graphics);
-		}
 		if (isPaused()) {
+			Color defaultColor = graphics.getColor();
+			graphics.setColor(Color.WHITE);
 			graphics.drawString("Paused", Board.SIZE.width / 2 - 25, Board.SIZE.height / 2 - 25);
+			graphics.setColor(defaultColor);
+		} else {
+			board.draw(graphics);
+			if (isActivePiece()) {
+				currentPiece.drawOnBoard(graphics);
+			}
 		}
 	}
 	

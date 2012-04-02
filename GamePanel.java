@@ -9,6 +9,8 @@ import java.awt.Graphics;
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.Box;
 import javax.swing.BorderFactory;
 import javax.swing.border.EtchedBorder;
 
@@ -25,15 +27,20 @@ class GamePanel extends JPanel {
 		this.height = height;
 		this.borderSize = borderSize;
 		setPreferredSize(new Dimension(width, height));
-		setBackground(new Color(248, 248, 255));
+		// setBackground(new Color(0, 0, 255));
+		setBackground(Color.BLACK);
 		setDoubleBuffered(true);
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		
+		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		BoardPanel boardPane = new BoardPanel(state, 
 								boardWidth, boardHeight, borderSize);
-		GUIPanel guiPane = new GUIPanel(state, 180, 590, borderSize);
+		GUIPanel guiPane = new GUIPanel(state, Block.SIZE.width * 6, Block.SIZE.height * 22, borderSize);
 		
+		add(Box.createHorizontalGlue());
 		add(boardPane);
+		add(Box.createRigidArea(new Dimension(Block.SIZE.width, height)));
 		add(guiPane);
+		add(Box.createHorizontalGlue());
     }
 }
