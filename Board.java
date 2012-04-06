@@ -29,6 +29,10 @@ class Board {
 		}
 	}
 	
+	public void empty() {
+		initData();
+	}
+	
 	public static void setSize(Dimension size) {
 		SIZE = size;
 	}
@@ -99,7 +103,8 @@ class Board {
 		}
 		
 		if (nFullRows > 0) {
-			listener.fullRowDetected(new FullRowEvent(this, fullRows, nFullRows));
+			listener.fullRowDetected(
+				new FullRowEvent(this, fullRows, nFullRows));
 		}
 	}
 	

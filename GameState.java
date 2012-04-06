@@ -33,6 +33,16 @@ public class GameState {
 		this(1);
 	}
 	
+	void reInit() {
+		level = 1;
+		score = 0;
+		linesCompleted = 0;
+		gameOver = false;
+		paused = false;
+		isActivePiece = false;
+		board.empty();
+	}
+	
 	void addBoardListener(BoardListener bl) {
 		board.addBoardListener(bl);
 	}
@@ -90,7 +100,7 @@ public class GameState {
 		  earnedLevel = 1;
 		} else if ((linesCompleted >= 1) && (linesCompleted <= 90)) {
 		  earnedLevel = 1 + ((linesCompleted - 1) / 4);
-		} else if (linesCompleted >= 91) {
+		} else if (linesCompleted >= 41) {
 		  earnedLevel = 10;
 		}
 		

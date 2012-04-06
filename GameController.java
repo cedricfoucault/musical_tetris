@@ -2,6 +2,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.util.*;
 
 
@@ -32,7 +33,9 @@ public class GameController {
 	// private static final long LONG_PRESS_TIME = 2000000;
 	
 	private final JFrame frame;
+	private final JPanel container;
 	private boolean running;
+	private boolean startPushed;
 	private static final Dimension RESOLUTION = new Dimension(900, 640);
 	private static final Dimension BLOCK_SIZE = new Dimension(28, 28);
 	private static final Dimension BOARD_FRAME_SIZE = 
@@ -41,28 +44,33 @@ public class GameController {
 	private static final int MARGIN = BLOCK_SIZE.width;
 	
 	GameController() {
-		running = true;
-		
 		// init the state of the game
 		state = new GameState(1);
 		initFallCountdown();
 		initMotionCountdown();
+		state.addBoardListener(new BoardController());
+		state.addStateListener(new StateController());
 		
 		// init the sound
 		GameSound.init();
 		
 		// Graphics
-		// init the game panel
-		GamePanel panel = new GamePanel(state,
+		// init the game panel and menu
+		container = new JPanel(new CardLayout());
+		MenuPanel menuPane = 
+			new MenuPanel(new StartListener(), new ExitListener());
+		GamePanel gamePane = new GamePanel(state,
 			RESOLUTION.width, RESOLUTION.height,
 			BOARD_FRAME_SIZE.width, BOARD_FRAME_SIZE.height, MARGIN);
-		Toolkit toolkit =  Toolkit.getDefaultToolkit ();
-		Dimension screenSize = toolkit.getScreenSize();
+		container.add(menuPane, "Menu");
+		container.add(gamePane, "Game");
 		// open the game window
 		frame = new JFrame("Tetris");
-		frame.setContentPane(panel);
+		frame.setContentPane(container);
 		frame.pack();
 		frame.setResizable(false);
+		Toolkit toolkit =  Toolkit.getDefaultToolkit ();
+		Dimension screenSize = toolkit.getScreenSize();
 		frame.setLocation((screenSize.width - RESOLUTION.width)  / 2,
 			(screenSize.height - RESOLUTION.height) / 2);
 		frame.setVisible(true);
@@ -72,8 +80,15 @@ public class GameController {
 		frame.addKeyListener(new KeyInputHandler());
 		frame.addWindowListener(new WindowHandler());
 		frame.setFocusTraversalKeysEnabled(false);
-		state.addBoardListener(new BoardController());
-		state.addStateListener(new StateController());
+	}
+	
+	private void reInit() {
+		state.reInit();
+	}
+	
+	private void start() {
+		running = true;
+		gameLoop();
 	}
 	
 	private void gameLoop() {
@@ -82,7 +97,7 @@ public class GameController {
 		while (running) {
 			if (state.isOver()) {
 				running = false;
-				System.out.print("gameover");
+				System.out.println("gameover");
 				try {
 					System.out.flush();
 				} catch (Exception e) {}
@@ -185,11 +200,25 @@ public class GameController {
 		}
 	}
 	
+	public class StartListener implements ActionListener {
+		StartListener() {}
+		public void actionPerformed(ActionEvent e) {
+			startPushed = true;
+		}
+	}
+	
+	public class ExitListener implements ActionListener {
+		ExitListener() {}
+		public void actionPerformed(ActionEvent e) {
+			System.exit(0);
+		}
+	}
+	
 	public class BoardController implements BoardListener {
 		BoardController() {}
 		public void fullRowDetected(FullRowEvent e) {
 			state.killRows(e.fullRows);
-			GameSound.playLineClear();
+			GameSound.playLineClear(e.nRows);
 			state.incLinesCompleted(e.nRows);
 			state.incScore(e.nRows);
 		}
@@ -247,7 +276,7 @@ public class GameController {
 				}
 			} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				// exit
-				System.exit(0);
+				running = false;
 			}
 			keyPressTime = e.getWhen();
 		} 
@@ -277,7 +306,28 @@ public class GameController {
 	
 	public static void main(String[] args) {
 		GameController g = new GameController();
-		g.gameLoop();
+		CardLayout cl = (CardLayout)(g.container.getLayout());
+		while (!g.startPushed) {
+			try { 
+				Thread.sleep(100); 
+			} catch (Exception e) {}
+		}
+		g.startPushed = false;
+		cl.next(g.container);
+		g.start();
+		cl.next(g.container);
+		while(true) {
+			while (!g.startPushed) {
+				try { 
+					Thread.sleep(100); 
+				} catch (Exception e) {}
+			}
+			g.startPushed = false;
+			g.reInit();
+			cl.next(g.container);
+			g.start();
+			cl.next(g.container);
+		}
 	}
 }
 
