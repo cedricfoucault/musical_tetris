@@ -32,8 +32,7 @@ public class GUIPanel extends JPanel {
 		setMaximumSize(size);
 		setMinimumSize(size);
 		setPreferredSize(size);
-		// setBorder(BorderFactory.createLineBorder(new Color(119, 136, 153), borderSize));
-		// setBackground(new Color(248, 248, 255));
+
 		setBackground(Color.BLACK);
 		setAlignmentX(RIGHT_ALIGNMENT);
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -135,7 +134,7 @@ class ScorePanel extends JPanel {
 			String str = "SCORE";
 			Font baseFont = g2D.getFont();
 			Color baseColor = g2D.getColor();
-			g2D.setFont(GUIFonts.getTetrisFont((float)labelFontSize));
+			g2D.setFont(TetrisFont.getTetrisFont((float)labelFontSize));
 			FontMetrics fm = g2D.getFontMetrics();
 			int strWidth = fm.stringWidth(str);
 			int strHeight = fm.getHeight();
@@ -156,7 +155,7 @@ class ScorePanel extends JPanel {
 			// this.state = state;
 			this.width = width;
 			this.height = height;
-			// hello = GUIFonts.getTetrisFont((float)digitsFontSize);
+			// hello = TetrisFont.getTetrisFont((float)digitsFontSize);
 			setPreferredSize(new Dimension(width, height));
 			setAlignmentX(CENTER_ALIGNMENT);
 			// setBackground(new Color(248, 248, 255));
@@ -175,10 +174,10 @@ class ScorePanel extends JPanel {
 			Graphics2D g2D = (Graphics2D) g;
 			String scoreStr = Integer.toString(state.getScore());
 	        // FontRenderContext frc = g2D.getFontRenderContext();
-	        //         GlyphVector gv = (GUIFonts.TETRIS_FONT).createGlyphVector(frc, scoreStr);
+	        //         GlyphVector gv = (TetrisFont.TETRIS_FONT).createGlyphVector(frc, scoreStr);
 			Font baseFont = g2D.getFont();
 			Color baseColor = g2D.getColor();
-			g2D.setFont(GUIFonts.getTetrisFont((float)digitsFontSize));
+			g2D.setFont(TetrisFont.getTetrisFont((float)digitsFontSize));
 			FontMetrics fm = g2D.getFontMetrics();
 			int strWidth = fm.stringWidth(scoreStr);
 			int strHeight = fm.getHeight();
@@ -236,7 +235,7 @@ class LinesPanel extends JPanel {
 			String str = "LINES";
 			Font baseFont = g2D.getFont();
 			Color baseColor = g2D.getColor();
-			g2D.setFont(GUIFonts.getTetrisFont((float)labelFontSize));
+			g2D.setFont(TetrisFont.getTetrisFont((float)labelFontSize));
 			FontMetrics fm = g2D.getFontMetrics();
 			int strWidth = fm.stringWidth(str);
 			int strHeight = fm.getHeight();
@@ -257,7 +256,7 @@ class LinesPanel extends JPanel {
 			// this.state = state;
 			this.width = width;
 			this.height = height;
-			// hello = GUIFonts.getTetrisFont((float)digitsFontSize);
+			// hello = TetrisFont.getTetrisFont((float)digitsFontSize);
 			setPreferredSize(new Dimension(width, height));
 			setAlignmentX(CENTER_ALIGNMENT);
 			// setBackground(new Color(248, 248, 255));
@@ -273,7 +272,7 @@ class LinesPanel extends JPanel {
 			String linesStr = Integer.toString(state.getLinesCompleted());
 			Font baseFont = g2D.getFont();
 			Color baseColor = g2D.getColor();
-			g2D.setFont(GUIFonts.getTetrisFont((float)digitsFontSize));
+			g2D.setFont(TetrisFont.getTetrisFont((float)digitsFontSize));
 			FontMetrics fm = g2D.getFontMetrics();
 			int strWidth = fm.stringWidth(linesStr);
 			int strHeight = fm.getHeight();
@@ -331,7 +330,7 @@ class LevelPanel extends JPanel {
 			String str = "LEVEL";
 			Font baseFont = g2D.getFont();
 			Color baseColor = g2D.getColor();
-			g2D.setFont(GUIFonts.getTetrisFont((float)labelFontSize));
+			g2D.setFont(TetrisFont.getTetrisFont((float)labelFontSize));
 			FontMetrics fm = g2D.getFontMetrics();
 			int strWidth = fm.stringWidth(str);
 			int strHeight = fm.getHeight();
@@ -352,7 +351,7 @@ class LevelPanel extends JPanel {
 			// this.state = state;
 			this.width = width;
 			this.height = height;
-			// hello = GUIFonts.getTetrisFont((float)digitsFontSize);
+			// hello = TetrisFont.getTetrisFont((float)digitsFontSize);
 			setPreferredSize(new Dimension(width, height));
 			setAlignmentX(CENTER_ALIGNMENT);
 			// setBackground(new Color(248, 248, 255));
@@ -371,10 +370,10 @@ class LevelPanel extends JPanel {
 			Graphics2D g2D = (Graphics2D) g;
 			String levelStr = Integer.toString(state.getLevel());
 	        // FontRenderContext frc = g2D.getFontRenderContext();
-	        //         GlyphVector gv = (GUIFonts.TETRIS_FONT).createGlyphVector(frc, scoreStr);
+	        //         GlyphVector gv = (TetrisFont.TETRIS_FONT).createGlyphVector(frc, scoreStr);
 			Font baseFont = g2D.getFont();
 			Color baseColor = g2D.getColor();
-			g2D.setFont(GUIFonts.getTetrisFont((float)digitsFontSize));
+			g2D.setFont(TetrisFont.getTetrisFont((float)digitsFontSize));
 			FontMetrics fm = g2D.getFontMetrics();
 			int strWidth = fm.stringWidth(levelStr);
 			int strHeight = fm.getHeight();
@@ -386,27 +385,4 @@ class LevelPanel extends JPanel {
 			g2D.setColor(baseColor);
 		}
 	}	
-}
-
-class GUIFonts {
-	// public static final float SIZE = 48f;
-	public static final Font TETRIS_FONT = (getFont("tetri.ttf"));
-		
-	public static Font getTetrisFont(float size) {
-		return TETRIS_FONT.deriveFont(size);
-	}
-		
-	private static Font getFont(String name) {
-	    Font font = null;
-	    String fName = "fonts/" + name;
-	    try {
-	      InputStream is = ScorePanel.class.getResourceAsStream(fName);
-	      font = Font.createFont(Font.TRUETYPE_FONT, is);
-	    } catch (Exception ex) {
-	      ex.printStackTrace();
-	      System.err.println(fName + " not loaded.  Using SansSerif font.");
-	      font = new Font("SansSerif", Font.PLAIN, 1);
-	    }
-	    return font;
-	}
 }

@@ -15,8 +15,8 @@ public class GameState {
 	private StateListener listener;
 	
 	
-	GameState(int level) {
-		this.level = level;
+	GameState(int startLevel) {
+		level = startLevel;
 		score = 0;
 		linesCompleted = 0;
 		gameOver = false;
@@ -33,8 +33,8 @@ public class GameState {
 		this(1);
 	}
 	
-	void reInit() {
-		level = 1;
+	void init(int startLevel) {
+		level = startLevel;
 		score = 0;
 		linesCompleted = 0;
 		gameOver = false;
