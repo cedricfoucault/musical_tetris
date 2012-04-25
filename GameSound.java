@@ -166,4 +166,16 @@ public class GameSound {
 		levelUpLine.setFramePosition(0);
 		levelUpLine.start();
 	}
+	
+	public static void close(){
+	    rotateLine.close();
+	    landLine.close();
+    	fallLine.close();
+    	hardDropLine.close();
+    	for (Clip line: dropLine) {
+    	    line.close();
+    	}
+    	lineClearLine.close();
+    	levelUpLine.close();
+	}
 }

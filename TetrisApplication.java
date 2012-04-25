@@ -74,6 +74,12 @@ public class TetrisApplication extends JApplet {
 		frame.setVisible(true);
     }
     
+    @Override
+    public void destroy() {
+        GameSound.close();
+        super.destroy();
+    }
+    
     // used to exit the application
     public void exit() {
         if (isApplet) {
