@@ -19,11 +19,11 @@ import javax.swing.border.TitledBorder;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 
-public class GUIPanel extends JPanel {
+public class SidePanel extends JPanel {
 	private final GameState state;
 	private int width, height;
 	
-	public GUIPanel(GameState state, int width, int height, int borderSize) {
+	public SidePanel(GameState state, int width, int height, int borderSize) {
 		super();
 		this.state = state;
 		this.width = width;
@@ -61,30 +61,20 @@ class NextPiecePanel extends JPanel {
 	
 	public NextPiecePanel(GameState state, int width, int height, int borderSize) {
 		super();
-		this.state = state;
-		this.width = width;
-		this.height = height;
+		this.state     = state;
+		this.width     = width;
+		this.height    = height;
 		Dimension size = new Dimension(width, height);
 		setMaximumSize(size);
 		setMinimumSize(size);
 		setPreferredSize(size);
 		setAlignmentX(CENTER_ALIGNMENT);
 		setAlignmentY(TOP_ALIGNMENT);
-		// Image gray_block = BlockSprites.lightgray_block.getScaledInstance(
-		// 			borderSize,
-		// 			borderSize,
-		// 			Image.SCALE_DEFAULT
-		// 		);
-		// ImageIcon icon = new ImageIcon(gray_block);
-		// setBorder(BorderFactory.createMatteBorder(borderSize,
-		// 	borderSize, borderSize, borderSize, icon));
 		setBackground(Color.BLACK);
-		// setBackground(new Color(000, 017, 85));
 	}
 	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		// Graphics2D pieceGraphics = (Graphics2D) g.create((width - Block.SIZE.width * 4) / 2, (height - Block.SIZE.height * 4) / 2, Block.SIZE.width * 4, Block.SIZE.height * 4);
 		Graphics2D pieceGraphics = (Graphics2D) g.create((width - Block.SIZE.width * 4) / 2, (height - Block.SIZE.height * 2) / 2, Block.SIZE.width * 4, Block.SIZE.height * 4);
 		state.drawNextPiece(pieceGraphics);
 	}
@@ -98,14 +88,13 @@ class ScorePanel extends JPanel {
 	
 	public ScorePanel(GameState state, int width, int height, int borderSize) {
 		super();
-		this.state = state;
-		this.width = width;
+		this.state  = state;
+		this.width  = width;
 		this.height = height;
 		setPreferredSize(new Dimension(width, height));
 		setAlignmentX(CENTER_ALIGNMENT);
-		// setBackground(new Color(248, 248, 255));
 		setBackground(Color.BLACK);
-		ScoreLabel scoreLab = new ScoreLabel(width, 
+		ScoreLabel scoreLab    = new ScoreLabel(width, 
 				((height / 2) * labelFontSize) / digitsFontSize,
 				borderSize);
 		DigitsPanel digitPanel = new DigitsPanel(width, 
@@ -117,27 +106,26 @@ class ScorePanel extends JPanel {
 	
 	class ScoreLabel extends JPanel {
 		private int width, height;
+		private final String str = "SCORE";
 		
 		public ScoreLabel(int width, int height, int borderSize) {
 			super();
-			this.width = width;
+			this.width  = width;
 			this.height = height;
 			setPreferredSize(new Dimension(width, height));
 			setAlignmentX(CENTER_ALIGNMENT);
-			// setBackground(new Color(248, 248, 255));
 			setBackground(Color.BLACK);
 		}
 		
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			Graphics2D g2D = (Graphics2D) g;
-			String str = "SCORE";
-			Font baseFont = g2D.getFont();
+			Graphics2D g2D  = (Graphics2D) g;
+			Font baseFont   = g2D.getFont();
 			Color baseColor = g2D.getColor();
 			g2D.setFont(TetrisFont.getTetrisFont((float)labelFontSize));
-			FontMetrics fm = g2D.getFontMetrics();
-			int strWidth = fm.stringWidth(str);
-			int strHeight = fm.getHeight();
+			FontMetrics fm  = g2D.getFontMetrics();
+			int strWidth    = fm.stringWidth(str);
+			int strHeight   = fm.getHeight();
 			
 			g2D.setColor(Color.WHITE);
 			g2D.drawString(str, (width - strWidth) / 2, 
@@ -152,35 +140,23 @@ class ScorePanel extends JPanel {
 
 		public DigitsPanel(int width, int height, int borderSize) {
 			super();
-			// this.state = state;
 			this.width = width;
 			this.height = height;
-			// hello = TetrisFont.getTetrisFont((float)digitsFontSize);
 			setPreferredSize(new Dimension(width, height));
 			setAlignmentX(CENTER_ALIGNMENT);
-			// setBackground(new Color(248, 248, 255));
 			setBackground(Color.BLACK);
-			// Border border = BorderFactory.createLineBorder(new Color(119, 136, 153), borderSize);
-			// setBorder(border);
-			// setBackground(Color.white);
 		}
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			// g.setColor(Color.black);
-			// g.drawRect(0, 0, width - 1, height - 1);
-			// g.fillRect(0, 0, width - 1, height - 1);
-			// g.setColor(Color.white);
-			Graphics2D g2D = (Graphics2D) g;
+			Graphics2D g2D  = (Graphics2D) g;
 			String scoreStr = Integer.toString(state.getScore());
-	        // FontRenderContext frc = g2D.getFontRenderContext();
-	        //         GlyphVector gv = (TetrisFont.TETRIS_FONT).createGlyphVector(frc, scoreStr);
-			Font baseFont = g2D.getFont();
+			Font baseFont   = g2D.getFont();
 			Color baseColor = g2D.getColor();
 			g2D.setFont(TetrisFont.getTetrisFont((float)digitsFontSize));
-			FontMetrics fm = g2D.getFontMetrics();
-			int strWidth = fm.stringWidth(scoreStr);
-			int strHeight = fm.getHeight();
+			FontMetrics fm  = g2D.getFontMetrics();
+			int strWidth    = fm.stringWidth(scoreStr);
+			int strHeight   = fm.getHeight();
 			
 			g2D.setColor(Color.WHITE);
 	        g2D.drawString(scoreStr, (width - strWidth) / 2, 
@@ -199,8 +175,8 @@ class LinesPanel extends JPanel {
 	
 	public LinesPanel(GameState state, int width, int height, int borderSize) {
 		super();
-		this.state = state;
-		this.width = width;
+		this.state  = state;
+		this.width  = width;
 		this.height = height;
 		setPreferredSize(new Dimension(width, height));
 		setAlignmentX(CENTER_ALIGNMENT);
@@ -218,27 +194,26 @@ class LinesPanel extends JPanel {
 	
 	class LinesLabel extends JPanel {
 		private int width, height;
+		private final String str = "LINES";
 		
 		public LinesLabel(int width, int height, int borderSize) {
 			super();
-			this.width = width;
+			this.width  = width;
 			this.height = height;
 			setPreferredSize(new Dimension(width, height));
 			setAlignmentX(CENTER_ALIGNMENT);
-			// setBackground(new Color(248, 248, 255));
 			setBackground(Color.BLACK);
 		}
 		
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			Graphics2D g2D = (Graphics2D) g;
-			String str = "LINES";
-			Font baseFont = g2D.getFont();
+			Graphics2D g2D  = (Graphics2D) g;
+			Font baseFont   = g2D.getFont();
 			Color baseColor = g2D.getColor();
 			g2D.setFont(TetrisFont.getTetrisFont((float)labelFontSize));
-			FontMetrics fm = g2D.getFontMetrics();
-			int strWidth = fm.stringWidth(str);
-			int strHeight = fm.getHeight();
+			FontMetrics fm  = g2D.getFontMetrics();
+			int strWidth    = fm.stringWidth(str);
+			int strHeight   = fm.getHeight();
 			
 			g2D.setColor(Color.WHITE);
 			g2D.drawString(str, (width - strWidth) / 2, 
@@ -253,29 +228,23 @@ class LinesPanel extends JPanel {
 
 		public DigitsPanel(int width, int height, int borderSize) {
 			super();
-			// this.state = state;
-			this.width = width;
+			this.width  = width;
 			this.height = height;
-			// hello = TetrisFont.getTetrisFont((float)digitsFontSize);
 			setPreferredSize(new Dimension(width, height));
 			setAlignmentX(CENTER_ALIGNMENT);
-			// setBackground(new Color(248, 248, 255));
 			setBackground(Color.BLACK);
-			// Border border = BorderFactory.createLineBorder(new Color(119, 136, 153), borderSize);
-			// setBorder(border);
-			// setBackground(Color.white);
 		}
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			Graphics2D g2D = (Graphics2D) g;
+			Graphics2D g2D  = (Graphics2D) g;
 			String linesStr = Integer.toString(state.getLinesCompleted());
-			Font baseFont = g2D.getFont();
+			Font baseFont   = g2D.getFont();
 			Color baseColor = g2D.getColor();
 			g2D.setFont(TetrisFont.getTetrisFont((float)digitsFontSize));
-			FontMetrics fm = g2D.getFontMetrics();
-			int strWidth = fm.stringWidth(linesStr);
-			int strHeight = fm.getHeight();
+			FontMetrics fm  = g2D.getFontMetrics();
+			int strWidth    = fm.stringWidth(linesStr);
+			int strHeight   = fm.getHeight();
 
 			g2D.setColor(Color.WHITE);
 			g2D.drawString(linesStr, (width - strWidth) / 2, 
@@ -289,19 +258,19 @@ class LinesPanel extends JPanel {
 class LevelPanel extends JPanel {
 	private int width, height;
 	private GameState state;
-	private int labelFontSize = 42;
+	private int labelFontSize  = 42;
 	private int digitsFontSize = 48;
 	
 	public LevelPanel(GameState state, int width, int height, int borderSize) {
 		super();
-		this.state = state;
-		this.width = width;
+		this.state  = state;
+		this.width  = width;
 		this.height = height;
 		setPreferredSize(new Dimension(width, height));
 		setAlignmentX(CENTER_ALIGNMENT);
 		// setBackground(new Color(248, 248, 255));
 		setBackground(Color.BLACK);
-		LevelLabel linesLab = new LevelLabel(width, 
+		LevelLabel linesLab    = new LevelLabel(width, 
 				((height / 2) * labelFontSize) / digitsFontSize,
 				borderSize);
 		DigitsPanel digitPanel = new DigitsPanel(width, 
@@ -313,27 +282,26 @@ class LevelPanel extends JPanel {
 	
 	class LevelLabel extends JPanel {
 		private int width, height;
+		private final String str = "LEVEL";
 		
 		public LevelLabel(int width, int height, int borderSize) {
 			super();
-			this.width = width;
+			this.width  = width;
 			this.height = height;
 			setPreferredSize(new Dimension(width, height));
 			setAlignmentX(CENTER_ALIGNMENT);
-			// setBackground(new Color(248, 248, 255));
 			setBackground(Color.BLACK);
 		}
 		
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			Graphics2D g2D = (Graphics2D) g;
-			String str = "LEVEL";
-			Font baseFont = g2D.getFont();
+			Graphics2D g2D  = (Graphics2D) g;
+			Font baseFont   = g2D.getFont();
 			Color baseColor = g2D.getColor();
 			g2D.setFont(TetrisFont.getTetrisFont((float)labelFontSize));
-			FontMetrics fm = g2D.getFontMetrics();
-			int strWidth = fm.stringWidth(str);
-			int strHeight = fm.getHeight();
+			FontMetrics fm  = g2D.getFontMetrics();
+			int strWidth    = fm.stringWidth(str);
+			int strHeight   = fm.getHeight();
 			
 			g2D.setColor(Color.WHITE);
 			g2D.drawString(str, (width - strWidth) / 2, 
@@ -348,35 +316,23 @@ class LevelPanel extends JPanel {
 
 		public DigitsPanel(int width, int height, int borderSize) {
 			super();
-			// this.state = state;
-			this.width = width;
+			this.width  = width;
 			this.height = height;
-			// hello = TetrisFont.getTetrisFont((float)digitsFontSize);
 			setPreferredSize(new Dimension(width, height));
 			setAlignmentX(CENTER_ALIGNMENT);
-			// setBackground(new Color(248, 248, 255));
 			setBackground(Color.BLACK);
-			// Border border = BorderFactory.createLineBorder(new Color(119, 136, 153), borderSize);
-			// setBorder(border);
-			// setBackground(Color.white);
 		}
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			// g.setColor(Color.black);
-			// g.drawRect(0, 0, width - 1, height - 1);
-			// g.fillRect(0, 0, width - 1, height - 1);
-			// g.setColor(Color.white);
-			Graphics2D g2D = (Graphics2D) g;
+			Graphics2D g2D  = (Graphics2D) g;
 			String levelStr = Integer.toString(state.getLevel());
-	        // FontRenderContext frc = g2D.getFontRenderContext();
-	        //         GlyphVector gv = (TetrisFont.TETRIS_FONT).createGlyphVector(frc, scoreStr);
-			Font baseFont = g2D.getFont();
+			Font baseFont   = g2D.getFont();
 			Color baseColor = g2D.getColor();
 			g2D.setFont(TetrisFont.getTetrisFont((float)digitsFontSize));
-			FontMetrics fm = g2D.getFontMetrics();
-			int strWidth = fm.stringWidth(levelStr);
-			int strHeight = fm.getHeight();
+			FontMetrics fm  = g2D.getFontMetrics();
+			int strWidth    = fm.stringWidth(levelStr);
+			int strHeight   = fm.getHeight();
 
 			g2D.setColor(Color.WHITE);
 	        g2D.drawString(levelStr, (width - strWidth) / 2, 

@@ -16,17 +16,45 @@ public class BlockSprites {
 	public static BufferedImage purple_block;
 	
 	static {
+	    InputStream buffer;
 		try {
-			lightgray_block = 
-				ImageIO.read(new File("images/lightgray_block.png"));
-		    gray_block   = ImageIO.read(new File("images/gray_block.png"));
-		   	yellow_block = ImageIO.read(new File("images/yellow_block.png"));
-		   	cyan_block   = ImageIO.read(new File("images/cyan_block.png"));
-		   	green_block  = ImageIO.read(new File("images/green_block.png"));
-		   	red_block    = ImageIO.read(new File("images/red_block.png"));
-		   	orange_block = ImageIO.read(new File("images/orange_block.png"));
-		   	blue_block   = ImageIO.read(new File("images/blue_block.png"));
-		   	purple_block = ImageIO.read(new File("images/purple_block.png"));
+		    buffer = BlockSprites.class.getResourceAsStream(
+		                                        "images/lightgray_block.png");
+		    lightgray_block = ImageIO.read(buffer);
+		    buffer =
+		    BlockSprites.class.getResourceAsStream("images/gray_block.png");
+		    gray_block = ImageIO.read(buffer);
+		    buffer =
+		    BlockSprites.class.getResourceAsStream("images/yellow_block.png");
+		    yellow_block = ImageIO.read(buffer);
+		    buffer =
+		    BlockSprites.class.getResourceAsStream("images/cyan_block.png");
+		    cyan_block = ImageIO.read(buffer);
+		    buffer =
+		    BlockSprites.class.getResourceAsStream("images/green_block.png");
+		    green_block = ImageIO.read(buffer);
+		    buffer =
+		    BlockSprites.class.getResourceAsStream("images/red_block.png");
+		    red_block = ImageIO.read(buffer);
+		    buffer =
+		    BlockSprites.class.getResourceAsStream("images/orange_block.png");
+		    orange_block = ImageIO.read(buffer);
+		    buffer =
+		    BlockSprites.class.getResourceAsStream("images/blue_block.png");
+		    blue_block = ImageIO.read(buffer);
+		    buffer =
+		    BlockSprites.class.getResourceAsStream("images/purple_block.png");
+		    purple_block = ImageIO.read(buffer);
+            // lightgray_block = 
+            //  ImageIO.read(new File("images/lightgray_block.png"));
+            //          gray_block   = ImageIO.read(new File("images/gray_block.png"));
+            //          yellow_block = ImageIO.read(new File("images/yellow_block.png"));
+            //          cyan_block   = ImageIO.read(new File("images/cyan_block.png"));
+            //          green_block  = ImageIO.read(new File("images/green_block.png"));
+            //          red_block    = ImageIO.read(new File("images/red_block.png"));
+            //          orange_block = ImageIO.read(new File("images/orange_block.png"));
+            //          blue_block   = ImageIO.read(new File("images/blue_block.png"));
+            //          purple_block = ImageIO.read(new File("images/purple_block.png"));
 		} catch (IOException e) {
 			System.out.print("error trying to load block image\n");
 			System.exit(-1);

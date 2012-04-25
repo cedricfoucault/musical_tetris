@@ -19,6 +19,7 @@ class BoardPanel extends JPanel {
 	
 	public BoardPanel(GameState state, int width, int height, int margin) {
 		super();
+		// set properties
 		this.state = state;
 		this.width = width;
 		this.height = height;
@@ -28,18 +29,17 @@ class BoardPanel extends JPanel {
 		setPreferredSize(size);
 		setMinimumSize(size);
 		initSizes();
-		
-		Image gray_block = BlockSprites.lightgray_block.getScaledInstance(margin,
-			margin,	Image.SCALE_DEFAULT);
-		ImageIcon icon = new ImageIcon(gray_block);
-		setBorder(BorderFactory.createMatteBorder(margin,
-			margin, margin, margin, icon));
-		// setBorder(BorderFactory.createLineBorder(new Color(119, 136, 153), margin));
-		// setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-		// setBackground(new Color(230, 236, 255));
 		setBackground(Color.BLACK);
 		setAlignmentX(CENTER_ALIGNMENT);
-		// setBackground(new Color(0, 0, 51));
+		// create and set the panel border (gray blocks)
+		Image block_image =
+		    BlockSprites.lightgray_block.getScaledInstance(
+		        margin,
+			    margin,	
+			    Image.SCALE_DEFAULT);
+		ImageIcon icon = new ImageIcon(block_image);
+		setBorder(BorderFactory.createMatteBorder(margin,
+			margin, margin, margin, icon));
     }
 	
 	public BoardPanel(GameState state, Dimension size, int margin) {
@@ -48,11 +48,13 @@ class BoardPanel extends JPanel {
 
 	public void paintComponent(Graphics g) {
         super.paintComponent(g);		
-		Graphics2D boardGraph = (Graphics2D) g.create(margin, margin, Board.SIZE.width, Board.SIZE.height);
+		Graphics2D boardGraph = (Graphics2D)
+		    g.create(margin, margin, Board.SIZE.width, Board.SIZE.height);
 		state.drawBoard(boardGraph);
     }
 
 	private void initSizes() {
+	    // init the size of the board and of the block
 		Board.setSize(new Dimension(width - 2 * margin, height - 2 * margin));
 		int block_width = Board.SIZE.width / Board.WIDTH;
 		int block_height = Board.SIZE.height / Board.HEIGHT;

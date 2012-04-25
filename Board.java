@@ -50,14 +50,16 @@ class Board {
 		int xc = center.x, yc = center.y, x, y;
 		Point[] relativePoints = piece.getRelativePoints();
 		
-		boolean collision = ((xc < 0) || (xc >= WIDTH) || (yc < 0) || (yc >= HEIGHT) || (isFull(xc, yc)));
+		boolean collision = ((xc < 0) || (xc >= WIDTH) ||
+		    (yc < 0) || (yc >= HEIGHT) || (isFull(xc, yc)));
 		for (Point point : relativePoints) {
 			if (collision) {
 				break;
 			} else {
 				x = xc + point.x;
 				y = yc + point.y;
-				collision = ((x < 0) || (x >= WIDTH) || (y < 0) || (y >= HEIGHT) || (isFull(x, y)));
+				collision = ((x < 0) || (x >= WIDTH) ||
+				    (y < 0) || (y >= HEIGHT) || (isFull(x, y)));
 			}
 		}
 		
@@ -73,7 +75,6 @@ class Board {
 		for (Point point : relativePoints) {
 			data[yc + point.y][xc + point.x].setType(blockType);
 		}
-		// clean();
 		listener.land();
 		detectFullRows();
 	}

@@ -1,6 +1,6 @@
 import java.awt.*;
 
-public class TetrominoesCatalog {
+public class PieceData {
 	private static final Point[] O_HORIZONTAL = {
 		new Point(0, -1), new Point(-1, 0), new Point(-1, -1)
 	};

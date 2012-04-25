@@ -16,31 +16,28 @@ public class GameState {
 	
 	
 	GameState(int startLevel) {
-		level = startLevel;
-		score = 0;
+		level          = startLevel;
+		score          = 0;
 		linesCompleted = 0;
-		gameOver = false;
-		paused = false;
-		board = new Board();
-		isActivePiece = false;
-		// currentPiece = Piece.newRandomPiece();
-		nextPiece = Piece.newRandomPiece();
-		// resetFallCountdown();
-		// fallCountdown = 0;
+		gameOver       = false;
+		paused         = false;
+		isActivePiece  = false;
+		board          = new Board();
+		nextPiece      = Piece.newRandomPiece();
+	}
+	
+	void init(int startLevel) {
+		level          = startLevel;
+		score          = 0;
+		linesCompleted = 0;
+		gameOver       = false;
+		paused         = false;
+		isActivePiece  = false;
+		board.empty();
 	}
 	
 	GameState() {
 		this(1);
-	}
-	
-	void init(int startLevel) {
-		level = startLevel;
-		score = 0;
-		linesCompleted = 0;
-		gameOver = false;
-		paused = false;
-		isActivePiece = false;
-		board.empty();
 	}
 	
 	void addBoardListener(BoardListener bl) {
@@ -88,21 +85,13 @@ public class GameState {
 	private void updateLevel() {
 		int earnedLevel = 1;
 		
-		// if (linesCompleted <= 0) {
-		//   earnedLevel = 1;
-		// } else if ((linesCompleted >= 1) && (linesCompleted <= 90)) {
-		//   earnedLevel = 1 + ((linesCompleted - 1) / 10);
-		// } else if (linesCompleted >= 91) {
-		//   earnedLevel = 10;
-		// }
-		
-		if (linesCompleted <= 0) {
-		  earnedLevel = 1;
-		} else if ((linesCompleted >= 1) && (linesCompleted <= 90)) {
-		  earnedLevel = 1 + ((linesCompleted - 1) / 4);
-		} else if (linesCompleted >= 41) {
-		  earnedLevel = 10;
-		}
+        if (linesCompleted <= 0) {
+          earnedLevel = 1;
+        } else if ((linesCompleted >= 1) && (linesCompleted <= 90)) {
+          earnedLevel = 1 + ((linesCompleted - 1) / 10);
+        } else if (linesCompleted >= 91) {
+          earnedLevel = 10;
+        }
 		
 		if (earnedLevel > level) {
 			level = earnedLevel;
@@ -122,18 +111,18 @@ public class GameState {
 	};
 	
 	boolean canFallPiece() {
-		return canMovePiece(Move.DROP);
+		return canMovePiece(MoveType.DROP);
 	}
 	void moveDownPiece() {
-		movePiece(Move.DROP);
+		movePiece(MoveType.DROP);
 	}
 	void hardDropPiece() {
-		while (canMovePiece(Move.DROP)) {
-			movePiece(Move.DROP);
+		while (canMovePiece(MoveType.DROP)) {
+			movePiece(MoveType.DROP);
 		}
 	}
 	
-	boolean canMovePiece(Move movetype) {
+	boolean canMovePiece(MoveType movetype) {
 		if (!isPaused() && !isOver()) {
 			Piece movedPiece = (currentPiece.copy());
 			movedPiece.move(movetype);
@@ -143,9 +132,9 @@ public class GameState {
 		}
 	}
 	
-	void movePiece(Move movetype) {
+	void movePiece(MoveType movetype) {
 		currentPiece.move(movetype);
-		if (movetype == Move.DROP) {
+		if (movetype == MoveType.DROP) {
 			score++;
 			if (!canFallPiece()) {
 				GameSound.playLand();
@@ -188,16 +177,29 @@ public class GameState {
 		nextPiece.draw(graphics);
 	}
 	
-	public void drawBoard(Graphics2D graphics) {
+	public void drawBoard(Graphics2D g2D) {
 		if (isPaused()) {
-			Color defaultColor = graphics.getColor();
-			graphics.setColor(Color.WHITE);
-			graphics.drawString("Paused", Board.SIZE.width / 2 - 25, Board.SIZE.height / 2 - 25);
-			graphics.setColor(defaultColor);
+    		Font baseFont   = g2D.getFont();
+    		Color baseColor = g2D.getColor();
+    		String str = "PAUSED";
+    		g2D.setFont(TetrisFont.getTetrisFont(52f));
+    		FontMetrics fm  = g2D.getFontMetrics();
+    		int strWidth    = fm.stringWidth(str);
+    		int strHeight   = fm.getHeight();
+    		// draw the text corresponding to the level in white
+    		g2D.setColor(Color.WHITE);
+    		g2D.drawString(str, 
+    		    (Board.SIZE.width - strWidth) / 2,
+    		    (Board.SIZE.height + strHeight) / 2
+    		);
+    		// put back the default properties
+    		g2D.setFont(baseFont);
+    		g2D.setColor(baseColor);
+			
 		} else {
-			board.draw(graphics);
+			board.draw(g2D);
 			if (isActivePiece()) {
-				currentPiece.drawOnBoard(graphics);
+				currentPiece.drawOnBoard(g2D);
 			}
 		}
 	}

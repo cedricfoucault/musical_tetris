@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.sound.sampled.*;
 import java.io.File;
+import java.io.InputStream;
 
 public class GameSound {
 	private static Clip rotateLine;
@@ -11,36 +12,32 @@ public class GameSound {
 	private static Clip lineClearLine;
 	private static Clip levelUpLine;
 	
+	// used to init the audio for the game: load the sounds from raw data
 	public static void init() {
 		try {
 			int i;
 			dropLine = new Clip[6];
-			// lineClearLine = new Clip[4];
-			// File rotateFile = new File("sounds/rotate.wav");
-			File rotateFile = new File("sounds/tmbo.wav");
-			// File landFile = new File("sounds/block_land.wav");
-			File landFile = new File("sounds/kick_snare.wav");
-			File fallFile = new File("sounds/kick.wav");
-			File hardDropFile = new File("sounds/claves.wav");
-			File[] dropFile = {
-				new File("sounds/hihat1.wav"),
-				new File("sounds/hihat2.wav"),
-				new File("sounds/hihat3.wav"),
-				new File("sounds/hihat4.wav"),
-				new File("sounds/hihat6.wav"),
-				new File("sounds/hihat6.wav"),
-				new File("sounds/hihat7.wav"),
-				new File("sounds/hihat6.wav")
+			InputStream rotateFile = GameSound.class.getResourceAsStream(
+			    "sounds/tmbo.wav");
+			InputStream landFile = GameSound.class.getResourceAsStream(
+			    "sounds/kick_snare.wav");
+			InputStream fallFile = GameSound.class.getResourceAsStream(
+			    "sounds/kick.wav");
+			InputStream hardDropFile = GameSound.class.getResourceAsStream(
+			    "sounds/claves.wav");
+			InputStream[] dropFile = {
+			    GameSound.class.getResourceAsStream("sounds/hihat1.wav"),
+			    GameSound.class.getResourceAsStream("sounds/hihat2.wav"),
+			    GameSound.class.getResourceAsStream("sounds/hihat3.wav"),
+			    GameSound.class.getResourceAsStream("sounds/hihat4.wav"),
+			    GameSound.class.getResourceAsStream("sounds/hihat5.wav"),
+			    GameSound.class.getResourceAsStream("sounds/hihat6.wav")
 			};
-			File lineClearFile = new File("sounds/line_clear.wav");
-			// File[] lineClearFile = {
-			// 	new File("sounds/fanfare1.wav"),
-			// 	new File("sounds/fanfare2.wav"),
-			// 	new File("sounds/fanfare3.wav"),
-			// 	new File("sounds/fanfare4.wav")
-			// };
-			File levelUpFile = new File("sounds/levelup.wav");
-			
+			InputStream lineClearFile = GameSound.class.getResourceAsStream(
+			    "sounds/line_clear.wav");
+			InputStream levelUpFile = GameSound.class.getResourceAsStream(
+			    "sounds/levelup.wav");
+			    			
 			AudioInputStream rotateStream =
 				AudioSystem.getAudioInputStream(rotateFile);
 	        AudioInputStream landStream = 
@@ -55,11 +52,6 @@ public class GameSound {
 			}
 			AudioInputStream lineClearStream =
 				AudioSystem.getAudioInputStream(lineClearFile);
-			// AudioInputStream[] lineClearStream = new AudioInputStream[4];
-			// for (i = 0; i < 4; i++) {
-			// 	lineClearStream[i] =
-			// 		AudioSystem.getAudioInputStream(lineClearFile[i]);
-			// }
 			AudioInputStream levelUpStream =
 				AudioSystem.getAudioInputStream(levelUpFile);
 			
@@ -78,12 +70,6 @@ public class GameSound {
 			}
 			DataLine.Info lineClearInfo =
 				new DataLine.Info(Clip.class, lineClearStream.getFormat());
-			// DataLine.Info lineClearInfo[] = new DataLine.Info[4];
-			// 			for (i = 0; i < 4; i++) {
-			// 				lineClearInfo[i] =
-			// 					new DataLine.Info(Clip.class,
-			// 						lineClearStream[i].getFormat());
-			// 			}
 			DataLine.Info levelUpInfo =
 				new DataLine.Info(Clip.class, levelUpStream.getFormat());
 			
@@ -95,10 +81,6 @@ public class GameSound {
 				dropLine[i] = (Clip) AudioSystem.getLine(dropInfo[i]);
 			}
 			lineClearLine = (Clip) AudioSystem.getLine(lineClearInfo);
-			// for (i = 0; i < 4; i++) {
-			// 			lineClearLine[i] = 
-			// 				(Clip) AudioSystem.getLine(lineClearInfo[i]);
-			// 		}
 			levelUpLine = (Clip) AudioSystem.getLine(levelUpInfo);
 			
 			rotateLine.open(rotateStream);
@@ -109,9 +91,6 @@ public class GameSound {
 				dropLine[i].open(dropStream[i]);
 			}
 			lineClearLine.open(lineClearStream);
-			// for (i = 0; i < 4; i++) {
-			// 				lineClearLine[i].open(lineClearStream[i]);
-			// 			}
 			levelUpLine.open(levelUpStream);
 		} catch (Exception e) {
 			System.err.println(e.toString());
@@ -173,17 +152,11 @@ public class GameSound {
 	}
 	
 	public static void playLineClear(int nRows) {
-		// int i = nRows - 1;
 		if (lineClearLine.isRunning()) {
 			lineClearLine.stop();
 		}
 		lineClearLine.setFramePosition(0);
 		lineClearLine.start();
-		// if (lineClearLine.isRunning()) {
-		// 	lineClearLine.stop();
-		// }
-		// lineClearLine.setFramePosition(600);
-		// lineClearLine.start();
 	}
 	
 	public static void playLevelUp() {
@@ -193,9 +166,4 @@ public class GameSound {
 		levelUpLine.setFramePosition(0);
 		levelUpLine.start();
 	}
-	
-	// public static void main(String[] args) {
-	// 	playLandSound();
-	// 	playLineClearSound();
-	// }
 }

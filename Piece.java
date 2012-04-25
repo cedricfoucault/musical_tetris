@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.lang.*;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Collections;
 
 public class Piece {
 	public BlockType blockType; // the block type of the tetris piece
@@ -11,7 +12,19 @@ public class Piece {
 	private static final int START_ORIENTATION = 0;
 	public static final int START_X = 5;
 	public static final int START_Y = 19;
-	private static final Random BLOCK_GENERATOR = new Random();
+	private static final LinkedList<BlockType> PIECE_BAG = 
+	    new LinkedList<BlockType>();
+	private static LinkedList<BlockType> current_piece_bag;
+	static {
+	    PIECE_BAG.add(BlockType.O);
+	    PIECE_BAG.add(BlockType.I);
+	    PIECE_BAG.add(BlockType.S);
+	    PIECE_BAG.add(BlockType.Z);
+	    PIECE_BAG.add(BlockType.L);
+	    PIECE_BAG.add(BlockType.J);
+	    PIECE_BAG.add(BlockType.T);
+	    generateNewPieceBag();
+	}
 	
 	// CONSTRUCTORS
 	Piece(Piece p) {
@@ -25,7 +38,7 @@ public class Piece {
 		this.blockType = blockType;
 		this.orientation = orientation;
 		this.center = center;
-		this.relativePoints = TetrominoesCatalog.getRelativePoints(blockType, orientation);	
+		this.relativePoints = PieceData.getRelativePoints(blockType, orientation);	
 	}
 	
 	Piece(BlockType blockType, int orientation, int x, int y) {
@@ -71,11 +84,11 @@ public class Piece {
 	}
 	
 	// moves the piece accordingly 
-	void move(Move movetype) {
+	void move(MoveType movetype) {
 		switch (movetype) {
 			case ROTATE: {
 				orientation = (orientation + 1) % 4;
-				relativePoints = TetrominoesCatalog.getRelativePoints(blockType, orientation);
+				relativePoints = PieceData.getRelativePoints(blockType, orientation);
 				break;
 			}
 			case LEFT: {
@@ -97,9 +110,18 @@ public class Piece {
 		return (new Piece(this));
 	}
 	
+	private static void generateNewPieceBag() {
+	    current_piece_bag = new LinkedList<BlockType>(PIECE_BAG);
+	    Collections.shuffle(current_piece_bag);
+	}
+	
 	public static Piece newRandomPiece() {
-		BlockType blockType =
-			BlockType.fromInt(BLOCK_GENERATOR.nextInt(BlockType.NB) + 1);
+	    // generate a new bag if the current bag is empty
+	    if (current_piece_bag.isEmpty()) {
+	        generateNewPieceBag();
+	    }
+	    // get the next piece in the bag
+	    BlockType blockType = (BlockType) current_piece_bag.removeFirst();
 		return new Piece(blockType);
 	}
 }

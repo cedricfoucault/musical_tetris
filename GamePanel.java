@@ -22,21 +22,24 @@ class GamePanel extends JPanel {
 	public GamePanel(GameState state, int width, int height, 
 				int boardWidth, int boardHeight, int borderSize) {
 		super();
+		// init the panel parameters
 		this.state = state;
 		this.width = width;
 		this.height = height;
 		this.borderSize = borderSize;
 		setPreferredSize(new Dimension(width, height));
-		// setBackground(new Color(0, 0, 255));
 		setBackground(Color.BLACK);
 		setDoubleBuffered(true);
 		setAlignmentX(Component.CENTER_ALIGNMENT);
-		
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+		
+		// create the subpanels: board panel and side panel
 		BoardPanel boardPane = new BoardPanel(state, 
 								boardWidth, boardHeight, borderSize);
-		GUIPanel guiPane = new GUIPanel(state, Block.SIZE.width * 6, Block.SIZE.height * 22, borderSize);
+		SidePanel guiPane = new SidePanel(
+		    state, Block.SIZE.width * 6, Block.SIZE.height * 22, borderSize);
 		
+		// layout the panels properly
 		add(Box.createHorizontalGlue());
 		add(boardPane);
 		add(Box.createRigidArea(new Dimension(Block.SIZE.width, height)));
