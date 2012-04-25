@@ -73,7 +73,9 @@ public class GameController {
 		gamePane   = new GamePanel(state,
 			RESOLUTION.width, RESOLUTION.height,
 			BOARD_FRAME_SIZE.width, BOARD_FRAME_SIZE.height, MARGIN);
-        
+			
+        contentPane.setBackground(Color.BLACK);
+        contentPane.setDoubleBuffered(true);
 		contentPane.add(menuPane, "Menu");
 		contentPane.add(gamePane, "Game"); 
         // contentPane.setFocusable(true);
@@ -192,8 +194,8 @@ public class GameController {
 	}
 	
 	private void updateGraphics() {
+        // contentPane.repaint();
         gamePane.repaint();
-        // contentPane.paint();
 	}
 	
 	public void updateState(long dTime) {
