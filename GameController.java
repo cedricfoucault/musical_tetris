@@ -26,14 +26,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class GameController {
+    // the state of the current game
 	private final GameState state;
-	private long fallCountdown; // in millisecond
+	// countdown used for the fall of the active piece
+	// (if countdown is < 0 then the piece drop down 1 row)
+	private long fallCountdown;
+	// countdown used for the accelerated fall in case of soft drop
 	private long motionCountdown;
-	private static final long DROP_MOTION_DELAY = 50; // ~ 30 cells / s
+	// delay for the soft drop (motionCountdown will be reset to this value)
+	private static final long DROP_MOTION_DELAY = 50;
+	// used to know the time at which the user pressed the last key
 	private long keyPressTime;
+	// boolean values used to know which keys are currently pressed
 	private boolean rightPressed, leftPressed, rotatePressed, dropPressed;
-	private boolean longKeyPress;
 	
+	// the main application for the whole game
     private final TetrisApplication mainApplication;
     // the content panel for the whole application
 	private final JPanel contentPane;
@@ -41,25 +48,29 @@ public class GameController {
     private final CardLayout paneSwitch;
     // the panel for the main menu
 	private final MenuPanel menuPane;
-    // the panel for when the game is running
+    // the panel for when a game is running
 	private final GamePanel gamePane;
-	// the key listener used when the game is running
+	// the key listener for when a game is running
 	private final KeyInputHandler gameKeyListener;
-	// used to init the start level for the game
+	// used to init the start level for a new game
 	private int startLevel;
 	// running is true while the game loop is running
 	private boolean running;
-	// the Timer used to iterate the game loop indefinitely
+	// the timer used to iterate the game loop indefinitely
 	private Timer timer;
-	// the delay used for the timer between 2 frames
+	// the delay between 2 frames used for the timer
 	private final int timerDelay = 15;
-	// use to calculate the actual delta time between 2 frames
+	// used to calculate the actual delta time between 2 frames
 	private long lastLoopTime;
 	
+	// the dimension of the screen
 	public static final Dimension RESOLUTION = new Dimension(900, 640);
+	// the size of a Tetris block
 	private static final Dimension BLOCK_SIZE = new Dimension(28, 28);
+	// the size for the BoardPanel including the borders
 	private static final Dimension BOARD_FRAME_SIZE = 
 		new Dimension(BLOCK_SIZE.width * 12, BLOCK_SIZE.height * 22);
+	// the width of the BoardPanel borders
 	private static final int MARGIN = BLOCK_SIZE.width;
 	
 	GameController(TetrisApplication mainApplication) {
@@ -86,8 +97,6 @@ public class GameController {
         contentPane.setDoubleBuffered(true);
 		contentPane.add(menuPane, "Menu");
 		contentPane.add(gamePane, "Game"); 
-        // contentPane.setFocusable(true);
-        // contentPane.requestFocusInWindow();
 		
 		// init the listeners
         gamePane.setFocusable(true);
@@ -96,20 +105,21 @@ public class GameController {
                         Component src = (Component) cEvt.getSource();
                         src.requestFocusInWindow();
                      }
-                  });
+        });
         menuPane.setFocusable(true);
         menuPane.addComponentListener(new ComponentAdapter() {
              public void componentShown(ComponentEvent cEvt) {
                 Component src = (Component) cEvt.getSource();
                 src.requestFocusInWindow();
              }
-          });
-		// won't be used until the game starts
+        });
         gameKeyListener = new KeyInputHandler();
         gamePane.addKeyListener(gameKeyListener);
         gamePane.setFocusTraversalKeysEnabled(false);
         state.addBoardListener(new BoardController());
 		state.addStateListener(new StateController());
+		
+		// display the menu
 		displayMenuPanel();
 	}
 	
@@ -139,19 +149,11 @@ public class GameController {
 		running = true;
         // init the game state
 		initState();
-        // SwingUtilities.invokeLater(new Runnable(){
-        //     public void run(){
-        //              // use the game key listener
-        //          contentPane.addKeyListener(gameKeyListener);
-        //              // disable tab focus traversal to be able to use the [TAB] key
-        //                 contentPane.setFocusTraversalKeysEnabled(false); 
-        //     }
-        // });
 		// display the game panel
 		displayGamePanel();
 	}
 	
-	private void gameLoop() {
+	private void startGameLoop() {
 	    // init the timer for the game loop and start it
         timer = new Timer(timerDelay, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -167,13 +169,6 @@ public class GameController {
 	}
 	
 	private void stopGame() {
-	    // set back the menu listeners
-        //      SwingUtilities.invokeLater(new Runnable(){
-        //     public void run(){
-        //         contentPane.removeKeyListener(gameKeyListener);
-        //                 contentPane.setFocusTraversalKeysEnabled(true); 
-        //     }
-        // });
 	    // display the menu panel
         displayMenuPanel();
 	}
@@ -198,50 +193,12 @@ public class GameController {
 		if (!state.isPaused()) {
 		// update the state of the game if it is not paused
 			updateState(dTime);
+        // handle the soft drop movement
 			handleInputMotion(dTime, lastLoopTime);
 		}
 		// UPDATE GRAPHICS
-		updateGraphics(); // == 
-		// Finally pause for a bit
+		updateGraphics();
 	}
-	
-    // private void gameLoop() {
-    //  long lastLoopTime = System.currentTimeMillis();
-    //  long dTime;
-    //         // int delay = 15;
-    //  int timerDelay = 15;
-    //         // new Timer(timerDelay , new ActionListener() {
-    //         //    public void actionPerformed(ActionEvent e) {
-    //         //       x++;
-    //         //       y++;
-    //         //       repaint();
-    //         //    }
-    //         // }).start();
-    //  while (running) {
-    //      // compute the time that has gone since the last frame
-    //      dTime = System.currentTimeMillis() - lastLoopTime;
-    //      lastLoopTime = System.currentTimeMillis();
-    //      
-    //      // UPDATE STATE
-    //      if (state.isOver()) {
-    //      // go out of the loop if the game is over
-    //          running = false;
-    //          break;
-    //      }
-    //      
-    //      if (!state.isPaused()) {
-    //      // update the state of the game if it is not paused
-    //          updateState(dTime);
-    //          handleInputMotion(dTime, lastLoopTime);
-    //      }
-    //      // UPDATE GRAPHICS
-    //      updateGraphics(); // == 
-    //      // Finally pause for a bit
-    //      try { 
-    //          Thread.sleep(delay); 
-    //      } catch (Exception e) {}
-    //  }
-    // }
 	
 	private void updateGraphics() {
         // contentPane.repaint();
@@ -333,36 +290,10 @@ public class GameController {
 	            // set the start level for the new game
 	            startLevel = Integer.parseInt(command);
 	            startGame();
-	            gameLoop();
+	            startGameLoop();
 	        }
 	    }
 	}
-	
-    // public class MenuListener implements ActionListener {
-    //     public void actionPerformed(ActionEvent e) {
-    //         String command = e.getActionCommand();
-    //         if (command.equals("EXIT")) {
-    //             mainApplication.exit();
-    //         } else {
-    //             // set the start level for the new game
-    //             startLevel = Integer.parseInt(command);
-    //             // start the new game and loop in a new thread
-    //                 SwingWorker controllerThread = 
-    //                     new SwingWorker<Integer, Void>() {
-    //                         public Integer doInBackground() {
-    //                             startGame();
-    //                             gameLoop();
-    //                             return (new Integer(0));
-    //                         }
-    // 
-    //                         public void done() {
-    //                             stopGame();
-    //                         }
-    //                     };
-    //                 controllerThread.execute();
-    //         }
-    //     }
-    // }
 	
 	public class BoardController implements BoardListener {
 		public void fullRowDetected(FullRowEvent e) {
@@ -438,7 +369,6 @@ public class GameController {
 				dropPressed = false;
 				GameSound.stopDrop();
 			}
-			longKeyPress = false;
 		}
 	}
 }
