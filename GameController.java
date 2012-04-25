@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.Timer;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -48,6 +49,13 @@ public class GameController {
 	private int startLevel;
 	// running is true while the game loop is running
 	private boolean running;
+	// the Timer used to iterate the game loop indefinitely
+	private Timer timer;
+	// the delay used for the timer between 2 frames
+	private final int timerDelay = 15;
+	// use to calculate the actual delta time between 2 frames
+	private long lastLoopTime;
+	
 	public static final Dimension RESOLUTION = new Dimension(900, 640);
 	private static final Dimension BLOCK_SIZE = new Dimension(28, 28);
 	private static final Dimension BOARD_FRAME_SIZE = 
@@ -143,6 +151,17 @@ public class GameController {
 		displayGamePanel();
 	}
 	
+	private void gameLoop() {
+	    // init the timer for the game loop and start it
+        timer = new Timer(timerDelay, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                gameLoopIteration();
+            }
+        });
+        lastLoopTime = System.currentTimeMillis();
+        timer.start();
+	}
+	
 	private void exit() {
 	    mainApplication.exit();
 	}
@@ -163,35 +182,66 @@ public class GameController {
 		state.init(startLevel);
 	}
 	
-	private void gameLoop() {
-		long lastLoopTime = System.currentTimeMillis();
-		long dTime;
-		int delay = 15;
-		while (running) {
-		    // compute the time that has gone since the last frame
-		    dTime = System.currentTimeMillis() - lastLoopTime;
-			lastLoopTime = System.currentTimeMillis();
-		    
-		    // UPDATE STATE
-			if (state.isOver()) {
-		    // go out of the loop if the game is over
-				running = false;
-				break;
-			}
-			
-			if (!state.isPaused()) {
-			// update the state of the game if it is not paused
-				updateState(dTime);
-				handleInputMotion(dTime, lastLoopTime);
-			}
-			// UPDATE GRAPHICS
-			updateGraphics(); // == 
-			// Finally pause for a bit
-			try { 
-				Thread.sleep(delay); 
-			} catch (Exception e) {}
+	private void gameLoopIteration() {
+	    // compute the time that has gone since the last frame
+	    long dTime = System.currentTimeMillis() - lastLoopTime;
+		lastLoopTime = System.currentTimeMillis();
+	    
+	    // UPDATE STATE
+		if (state.isOver() || running == false) {
+	    // go out of the loop if the game is over 
+	    // or running has been set to false
+			running = false;
+			timer.stop();
+			return;
 		}
+		if (!state.isPaused()) {
+		// update the state of the game if it is not paused
+			updateState(dTime);
+			handleInputMotion(dTime, lastLoopTime);
+		}
+		// UPDATE GRAPHICS
+		updateGraphics(); // == 
+		// Finally pause for a bit
 	}
+	
+    // private void gameLoop() {
+    //  long lastLoopTime = System.currentTimeMillis();
+    //  long dTime;
+    //         // int delay = 15;
+    //  int timerDelay = 15;
+    //         // new Timer(timerDelay , new ActionListener() {
+    //         //    public void actionPerformed(ActionEvent e) {
+    //         //       x++;
+    //         //       y++;
+    //         //       repaint();
+    //         //    }
+    //         // }).start();
+    //  while (running) {
+    //      // compute the time that has gone since the last frame
+    //      dTime = System.currentTimeMillis() - lastLoopTime;
+    //      lastLoopTime = System.currentTimeMillis();
+    //      
+    //      // UPDATE STATE
+    //      if (state.isOver()) {
+    //      // go out of the loop if the game is over
+    //          running = false;
+    //          break;
+    //      }
+    //      
+    //      if (!state.isPaused()) {
+    //      // update the state of the game if it is not paused
+    //          updateState(dTime);
+    //          handleInputMotion(dTime, lastLoopTime);
+    //      }
+    //      // UPDATE GRAPHICS
+    //      updateGraphics(); // == 
+    //      // Finally pause for a bit
+    //      try { 
+    //          Thread.sleep(delay); 
+    //      } catch (Exception e) {}
+    //  }
+    // }
 	
 	private void updateGraphics() {
         // contentPane.repaint();
@@ -273,7 +323,7 @@ public class GameController {
 			}
 		}
 	}
-	
+    
 	public class MenuListener implements ActionListener {
 	    public void actionPerformed(ActionEvent e) {
 	        String command = e.getActionCommand();
@@ -282,23 +332,37 @@ public class GameController {
 	        } else {
 	            // set the start level for the new game
 	            startLevel = Integer.parseInt(command);
-	            // start the new game and loop in a new thread
-                SwingWorker controllerThread = 
-                    new SwingWorker<Integer, Void>() {
-                        public Integer doInBackground() {
-                            startGame();
-                            gameLoop();
-                            return (new Integer(0));
-                        }
-
-                        public void done() {
-                            stopGame();
-                        }
-                    };
-                controllerThread.execute();
+	            startGame();
+	            gameLoop();
 	        }
 	    }
 	}
+	
+    // public class MenuListener implements ActionListener {
+    //     public void actionPerformed(ActionEvent e) {
+    //         String command = e.getActionCommand();
+    //         if (command.equals("EXIT")) {
+    //             mainApplication.exit();
+    //         } else {
+    //             // set the start level for the new game
+    //             startLevel = Integer.parseInt(command);
+    //             // start the new game and loop in a new thread
+    //                 SwingWorker controllerThread = 
+    //                     new SwingWorker<Integer, Void>() {
+    //                         public Integer doInBackground() {
+    //                             startGame();
+    //                             gameLoop();
+    //                             return (new Integer(0));
+    //                         }
+    // 
+    //                         public void done() {
+    //                             stopGame();
+    //                         }
+    //                     };
+    //                 controllerThread.execute();
+    //         }
+    //     }
+    // }
 	
 	public class BoardController implements BoardListener {
 		public void fullRowDetected(FullRowEvent e) {
@@ -358,6 +422,7 @@ public class GameController {
 			} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				// exit
 				running = false;
+				stopGame();
 			}
 			keyPressTime = e.getWhen();
 		} 
