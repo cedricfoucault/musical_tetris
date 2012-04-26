@@ -1,7 +1,6 @@
-import java.awt.Graphics2D;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.InputStream;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class BlockSprites {
@@ -19,7 +18,8 @@ public class BlockSprites {
 	    InputStream buffer;
 		try {
 		    buffer = BlockSprites.class.getResourceAsStream(
-		                                        "images/lightgray_block.png");
+		        "images/lightgray_block.png"
+		    );
 		    lightgray_block = ImageIO.read(buffer);
 		    buffer =
 		    BlockSprites.class.getResourceAsStream("images/gray_block.png");
@@ -45,16 +45,6 @@ public class BlockSprites {
 		    buffer =
 		    BlockSprites.class.getResourceAsStream("images/purple_block.png");
 		    purple_block = ImageIO.read(buffer);
-            // lightgray_block = 
-            //  ImageIO.read(new File("images/lightgray_block.png"));
-            //          gray_block   = ImageIO.read(new File("images/gray_block.png"));
-            //          yellow_block = ImageIO.read(new File("images/yellow_block.png"));
-            //          cyan_block   = ImageIO.read(new File("images/cyan_block.png"));
-            //          green_block  = ImageIO.read(new File("images/green_block.png"));
-            //          red_block    = ImageIO.read(new File("images/red_block.png"));
-            //          orange_block = ImageIO.read(new File("images/orange_block.png"));
-            //          blue_block   = ImageIO.read(new File("images/blue_block.png"));
-            //          purple_block = ImageIO.read(new File("images/purple_block.png"));
 		} catch (IOException e) {
 			System.out.print("error trying to load block image\n");
 			System.exit(-1);

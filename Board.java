@@ -1,8 +1,11 @@
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import javax.swing.*;
-import java.awt.event.*;
+import javax.swing.Timer;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 class Board {
 	public static final int HEIGHT = 20;

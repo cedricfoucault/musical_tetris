@@ -1,18 +1,10 @@
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.image.BufferStrategy;
-import java.awt.*;
-import java.awt.Graphics2D;
-import java.awt.Graphics;
-import java.awt.BorderLayout;
+import java.awt.Component;
 
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.Box;
-import javax.swing.BorderFactory;
-import javax.swing.border.EtchedBorder;
 
 class GamePanel extends JPanel {
 	private final GameState state;

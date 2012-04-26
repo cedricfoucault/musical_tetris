@@ -1,5 +1,5 @@
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.util.LinkedList;
 
 public class FullRowEvent extends ActionEvent {
 	public LinkedList<Integer> fullRows;

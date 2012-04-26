@@ -1,8 +1,7 @@
-import java.io.*;
+import java.io.InputStream;
 import java.awt.Font;
 
 public class TetrisFont {
-	// public static final float SIZE = 48f;
 	public static final Font TETRIS_FONT = (getFont("tetri.ttf"));
 		
 	public static Font getTetrisFont(float size) {

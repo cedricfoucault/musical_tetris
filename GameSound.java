@@ -1,6 +1,8 @@
-import javax.swing.*;
-import javax.sound.sampled.*;
-import java.io.File;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.Clip;
+
 import java.io.InputStream;
 import java.io.BufferedInputStream;
 

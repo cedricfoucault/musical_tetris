@@ -1,5 +1,6 @@
-import java.awt.*;
-import java.lang.*;
+import java.awt.Point;
+import java.awt.Graphics2D;
+
 import java.util.LinkedList;
 import java.util.Collections;
 

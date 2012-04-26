@@ -1,14 +1,11 @@
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.image.BufferStrategy;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.BorderLayout;
 
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 
@@ -32,14 +29,16 @@ class BoardPanel extends JPanel {
 		setBackground(Color.BLACK);
 		setAlignmentX(CENTER_ALIGNMENT);
 		// create and set the panel border (gray blocks)
-		Image block_image =
-		    BlockSprites.lightgray_block.getScaledInstance(
-		        margin,
-			    margin,	
-			    Image.SCALE_DEFAULT);
+		Image block_image = BlockSprites.lightgray_block.getScaledInstance(
+		    margin,
+			margin,	
+			Image.SCALE_DEFAULT
+		);
 		ImageIcon icon = new ImageIcon(block_image);
-		setBorder(BorderFactory.createMatteBorder(margin,
-			margin, margin, margin, icon));
+		setBorder(BorderFactory.createMatteBorder(
+		        margin, margin, margin, margin, icon
+		    )
+		);
     }
 	
 	public BoardPanel(GameState state, Dimension size, int margin) {
@@ -48,8 +47,9 @@ class BoardPanel extends JPanel {
 
 	public void paintComponent(Graphics g) {
         super.paintComponent(g);		
-		Graphics2D boardGraph = (Graphics2D)
-		    g.create(margin, margin, Board.SIZE.width, Board.SIZE.height);
+		Graphics2D boardGraph = (Graphics2D) g.create(
+		    margin, margin, Board.SIZE.width, Board.SIZE.height
+		);
 		state.drawBoard(boardGraph);
     }
 

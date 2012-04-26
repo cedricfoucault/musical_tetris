@@ -1,23 +1,14 @@
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.image.BufferStrategy;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
-import java.awt.BorderLayout;
-import java.awt.*;
-import java.io.*;
-import java.awt.font.*;
+import java.awt.Font;
+import java.awt.FontMetrics;
 
-import javax.swing.*;
-import javax.swing.border.*;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.Box;
 
 public class SidePanel extends JPanel {
 	private final GameState state;

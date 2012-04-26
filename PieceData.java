@@ -1,4 +1,4 @@
-import java.awt.*;
+import java.awt.Point;
 
 public class PieceData {
 	private static final Point[] O_HORIZONTAL = {

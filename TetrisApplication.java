@@ -17,10 +17,10 @@ public class TetrisApplication extends JApplet {
     private JFrame frame;
     //  the dimension of the applet
     private Dimension dimension;
-    // image used for double buffering
-    Image offscreen;
-    // the second buffer
-    Graphics bufferGraphics;
+    // // image used for double buffering
+    // Image offscreen;
+    // // the second buffer
+    // Graphics bufferGraphics;
     
     // the init function of the applet
     public void init() {

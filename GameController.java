@@ -1,29 +1,17 @@
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.*;
-import java.util.*;
-
-
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.image.BufferStrategy;
-import java.awt.Graphics2D;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.CardLayout;
 
 import javax.swing.JPanel;
-import javax.swing.BoxLayout;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.Timer;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
 
 public class GameController {
     // the state of the current game
