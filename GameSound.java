@@ -2,6 +2,7 @@ import javax.swing.*;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.InputStream;
+import java.io.BufferedInputStream;
 
 public class GameSound {
 	private static Clip rotateLine;
@@ -37,23 +38,34 @@ public class GameSound {
 			    "sounds/line_clear.wav");
 			InputStream levelUpFile = GameSound.class.getResourceAsStream(
 			    "sounds/levelup.wav");
-			    			
+			    
+			InputStream rotateBuffered = new BufferedInputStream(rotateFile);  			
 			AudioInputStream rotateStream =
-				AudioSystem.getAudioInputStream(rotateFile);
+				AudioSystem.getAudioInputStream(rotateBuffered);
+			InputStream landBuffered = new BufferedInputStream(landFile);
 	        AudioInputStream landStream = 
-				AudioSystem.getAudioInputStream(landFile);
+				AudioSystem.getAudioInputStream(landBuffered);
+			InputStream fallBuffered = new BufferedInputStream(fallFile);
 			AudioInputStream fallStream =
-				AudioSystem.getAudioInputStream(fallFile);
+				AudioSystem.getAudioInputStream(fallBuffered);
+			InputStream hardDropBuffered =
+			    new BufferedInputStream(hardDropFile);
 			AudioInputStream hardDropStream =
-				AudioSystem.getAudioInputStream(hardDropFile);
+				AudioSystem.getAudioInputStream(hardDropBuffered);
 			AudioInputStream[] dropStream = new AudioInputStream[6];
+			InputStream dropBuffered;
 			for (i = 0; i < 6; i++) {
-				dropStream[i] = AudioSystem.getAudioInputStream(dropFile[i]);
+			    dropBuffered = new BufferedInputStream(dropFile[i]);
+				dropStream[i] = AudioSystem.getAudioInputStream(dropBuffered);
 			}
+			InputStream lineClearBuffered =
+			    new BufferedInputStream(lineClearFile);
 			AudioInputStream lineClearStream =
-				AudioSystem.getAudioInputStream(lineClearFile);
+				AudioSystem.getAudioInputStream(lineClearBuffered);
+			InputStream levelUpBuffered =
+			    new BufferedInputStream(levelUpFile);
 			AudioInputStream levelUpStream =
-				AudioSystem.getAudioInputStream(levelUpFile);
+				AudioSystem.getAudioInputStream(levelUpBuffered);
 			
 			DataLine.Info rotateInfo =
 				new DataLine.Info(Clip.class, rotateStream.getFormat());
